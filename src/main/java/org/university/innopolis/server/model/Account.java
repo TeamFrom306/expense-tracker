@@ -13,14 +13,20 @@ public class Account {
     @GenericGenerator(name="accountIncrement", strategy="increment")
     private int id;
 
+    private String login;
+
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Record> records = new ArrayList<>();
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Category> categories = new ArrayList<>();
 
-    public Account() {
+    protected Account() {
         // Empty for JPA
+    }
+
+    public Account(String login){
+        this.login = login;
     }
 
     public int getId() {
@@ -33,5 +39,9 @@ public class Account {
 
     public List<Category> getCategories() {
         return categories;
+    }
+
+    public String getLogin() {
+        return login;
     }
 }

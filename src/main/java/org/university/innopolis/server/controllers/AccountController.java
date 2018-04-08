@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.university.innopolis.server.services.AccountService;
+import org.university.innopolis.server.views.AccountView;
 
 @Controller
 @RequestMapping(path = "/api")
@@ -23,7 +24,7 @@ public class AccountController {
     @GetMapping(path = "/user")
     ResponseEntity<?> getAccount(@RequestParam Integer id) {
         if (id != null) {
-            Object res = accountService.getAccountById(id);
+            AccountView res = accountService.getAccountById(id);
             if (res == null)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.ok(res);
@@ -32,8 +33,8 @@ public class AccountController {
     }
 
     @PostMapping(path = "/user")
-    ResponseEntity<?> createAccount() {
-        accountService.createAccount();
+    ResponseEntity<?> createAccount(@RequestParam String login) {
+        accountService.createAccount(login);
         return ResponseEntity.accepted().build();
     }
 }
