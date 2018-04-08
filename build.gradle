@@ -34,3 +34,25 @@ dependencies {
     compile group: 'com.h2database', name: 'h2', version: '1.4.196'
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
+
+sourceSets {
+    test {
+        java {
+            srcDir "test"
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "main"
+        }
+    }
+}
+
+test {
+    testLogging {
+        events 'started', 'passed'
+    }
+}
