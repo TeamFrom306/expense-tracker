@@ -21,6 +21,9 @@ public class Record {
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
+
     protected Record() {
     }
 
@@ -67,5 +70,17 @@ public class Record {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public Category getCategory() {
+        return category;
     }
 }

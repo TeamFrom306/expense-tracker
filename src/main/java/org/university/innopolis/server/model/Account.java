@@ -16,6 +16,9 @@ public class Account {
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Record> records = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Category> categories = new ArrayList<>();
+
     public Account() {
         // Empty for JPA
     }
@@ -26,5 +29,9 @@ public class Account {
 
     public List<Record> getRecords() {
         return records;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
     }
 }
