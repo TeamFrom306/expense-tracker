@@ -1,17 +1,25 @@
 package org.university.innopolis.server.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class Record {
     @Id
+    @GeneratedValue(generator="recordIncrement")
+    @GenericGenerator(name="recordIncrement", strategy="increment")
     private int id;
     private String description;
     private int amount;
     private Currency currency;
     private Date date;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Account account;
 
     protected Record() {
     }

@@ -1,15 +1,19 @@
 package org.university.innopolis.server.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Account {
     @Id
+    @GeneratedValue(generator="accountIncrement")
+    @GenericGenerator(name="accountIncrement", strategy="increment")
     private int id;
 
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Record> records = new ArrayList<>();
 
     public Account() {
