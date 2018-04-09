@@ -20,8 +20,9 @@ public class AuthService implements AuthenticationService {
     }
 
     @Override
-    public boolean isAuthorized(String token) {
-        return accountRepository.getByToken(token) != null;
+    public int getAccountId(String token) {
+        Account account = accountRepository.getByToken(token);
+        return account == null ? -1 : account.getId();
     }
 
     @Override
@@ -38,7 +39,7 @@ public class AuthService implements AuthenticationService {
     }
 
     private void storeToken(Account account, String login) {
-        String token = tokenService.generateToken(login);
+        String token = tokenService.generateToken(login, account.getId());
         account.setToken(token);
         accountRepository.save(account);
     }

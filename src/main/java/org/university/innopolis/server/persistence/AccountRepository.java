@@ -9,4 +9,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Account getByLogin(String login);
 
     Account getByToken(String token);
+
+    Account getByIdAndLogin(int id, String login);
 }

@@ -34,4 +34,9 @@ public class AccountService {
         else
             return new AccountView(account);
     }
+
+    public boolean isAuthorized(int accountId, String login) {
+        Account account = accountRepository.getByIdAndLogin(accountId, login);
+        return account != null;
+    }
 }
