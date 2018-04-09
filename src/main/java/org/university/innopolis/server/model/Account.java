@@ -14,6 +14,7 @@ public class Account {
     private int id;
 
     private String login;
+    private String password;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Record> records = new ArrayList<>();
@@ -25,8 +26,9 @@ public class Account {
         // Empty for JPA
     }
 
-    public Account(String login){
+    public Account(String login, String password){
         this.login = login;
+        this.password = password;
     }
 
     public int getId() {
@@ -43,5 +45,13 @@ public class Account {
 
     public String getLogin() {
         return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
