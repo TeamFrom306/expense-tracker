@@ -2,9 +2,9 @@ package org.university.innopolis.server.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.university.innopolis.server.model.Currency;
+import org.university.innopolis.server.common.Currency;
+import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.model.Record;
-import org.university.innopolis.server.model.Type;
 import org.university.innopolis.server.persistence.RecordRepository;
 import org.university.innopolis.server.views.RecordView;
 
@@ -19,31 +19,17 @@ public class RecordService {
         this.recordRepository = recordRepository;
     }
 
-    public RecordView addExpense(String description, int amount,
-                                 Currency currency, Date date,
-                                 Type type) {
-
-        Record res;
-        if (description == null || "".equals(description)) {
-            res = recordRepository.save(new Record(amount, currency, date, type));
-        } else {
-            res = recordRepository.save(new Record(amount, currency, date, description, type));
-        }
-        return new RecordView(res);
-    }
-
-    public RecordView addIncome(String description, int amount,
-                                Currency currency, Date date,
+    public RecordView addRecord(String description,
+                                int amount,
+                                Currency currency,
+                                Date date,
                                 Type type) {
-        Record res;
 
-        if(description == null || "".equals(description)) {
-            res = recordRepository.save(new Record(amount, currency, date, type));
-        } else {
-            res = recordRepository.save(new Record(amount, currency, date, description, type));
+        Record res = new Record(amount, currency, date, type);
+        if (!(description == null || "".equals(description))) {
+            res.setDescription(description);
         }
-
+        res = recordRepository.save(res);
         return new RecordView(res);
     }
-
 }

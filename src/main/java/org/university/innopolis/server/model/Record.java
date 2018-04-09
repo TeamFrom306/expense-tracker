@@ -2,6 +2,8 @@ package org.university.innopolis.server.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+import org.university.innopolis.server.common.Currency;
+import org.university.innopolis.server.common.Type;
 
 import javax.persistence.*;
 import java.util.Date;

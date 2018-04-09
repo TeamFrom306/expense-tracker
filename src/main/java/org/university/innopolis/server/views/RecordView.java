@@ -1,7 +1,7 @@
 package org.university.innopolis.server.views;
 
+import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.model.Record;
-import org.university.innopolis.server.model.Type;
 
 public class RecordView {
     private final Type type;
