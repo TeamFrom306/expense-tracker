@@ -5,12 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.university.innopolis.server.services.AccountService;
-import org.university.innopolis.server.services.BadCredentialsException;
-import org.university.innopolis.server.services.DuplicatedUserException;
+import org.university.innopolis.server.services.AuthenticationService;
 import org.university.innopolis.server.views.AccountView;
 
 @Controller
@@ -19,7 +18,7 @@ public class AccountController {
     private AccountService accountService;
 
     @Autowired
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, AuthenticationService authService) {
         this.accountService = accountService;
     }
 
@@ -28,29 +27,7 @@ public class AccountController {
     ResponseEntity getAccount(@RequestParam String login) {
         AccountView res = accountService.findAccount(login);
         if (res == null)
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with this login is not found");
         return ResponseEntity.ok(res);
-    }
-
-    @PostMapping(path = "/user")
-    ResponseEntity createAccount(@RequestParam String login,
-                                 @RequestParam String password) {
-        try {
-            return ResponseEntity.ok(accountService.createAccount(login, password));
-        } catch (DuplicatedUserException e) {
-            //TODO response
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-    }
-
-    @PostMapping(path = "/login")
-    ResponseEntity login(@RequestParam String login,
-                         @RequestParam String password) {
-        try {
-            AccountView account = accountService.authAccount(login, password);
-            return ResponseEntity.ok(account);
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
     }
 }
