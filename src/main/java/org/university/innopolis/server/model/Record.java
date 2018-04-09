@@ -16,6 +16,7 @@ public class Record {
     private int amount;
     private Currency currency;
     private Date date;
+    private Type type;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,16 +28,18 @@ public class Record {
     protected Record() {
     }
 
-    public Record(int amount, Currency currency, Date date) {
+    public Record(int amount, Currency currency, Date date, Type type) {
         this.amount = amount;
         this.currency = currency;
         this.date = date;
+        this.type = type;
     }
-    public Record(int amount, Currency currency, Date date, String description) {
+    public Record(int amount, Currency currency, Date date, String description, Type type) {
         this.amount = amount;
         this.currency = currency;
         this.date = date;
         this.description = description;
+        this.type = type;
     }
 
 
@@ -82,5 +85,13 @@ public class Record {
 
     public Category getCategory() {
         return category;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 }
