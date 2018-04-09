@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.innopolis.server.model.Account;
 import org.university.innopolis.server.persistence.AccountRepository;
+import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
 import org.university.innopolis.server.views.AccountView;
 
 @Service

@@ -1,5 +1,6 @@
 package org.university.innopolis.server.services;
 
+import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.views.AccountView;
 
 public interface AuthenticationService {

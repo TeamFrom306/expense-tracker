@@ -1,4 +1,4 @@
-package org.university.innopolis.server.services;
+package org.university.innopolis.server.services.helpers;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

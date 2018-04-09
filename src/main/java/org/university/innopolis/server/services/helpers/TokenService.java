@@ -1,4 +1,4 @@
-package org.university.innopolis.server.services;
+package org.university.innopolis.server.services.helpers;
 
 public interface TokenService {
     String generateToken(String login, int id);

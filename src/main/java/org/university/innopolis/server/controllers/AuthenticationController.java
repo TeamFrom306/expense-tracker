@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.university.innopolis.server.services.*;
+import org.university.innopolis.server.services.exceptions.BadCredentialsException;
+import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
+import org.university.innopolis.server.services.helpers.EncoderService;
 import org.university.innopolis.server.views.AccountView;
 
 @Controller

@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.university.innopolis.server.model.Account;
 import org.university.innopolis.server.persistence.AccountRepository;
+import org.university.innopolis.server.services.exceptions.BadCredentialsException;
+import org.university.innopolis.server.services.helpers.TokenService;
 import org.university.innopolis.server.views.AccountView;
 
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package org.university.innopolis.server.services;
+package org.university.innopolis.server.services.helpers;
 
 import com.google.common.hash.Hashing;
 import org.springframework.stereotype.Component;
