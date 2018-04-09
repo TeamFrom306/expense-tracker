@@ -26,8 +26,23 @@ public class RecordService {
         Record res;
         if (description == null || "".equals(description)) {
             res = recordRepository.save(new Record(amount, currency, date, type));
-        } else
-        res = recordRepository.save(new Record(amount, currency, date, description, type));
+        } else {
+            res = recordRepository.save(new Record(amount, currency, date, description, type));
+        }
+        return new RecordView(res);
+    }
+
+    public RecordView addIncome(String description, int amount,
+                                Currency currency, Date date,
+                                Type type) {
+        Record res;
+
+        if(description == null || "".equals(description)) {
+            res = recordRepository.save(new Record(amount, currency, date, type));
+        } else {
+            res = recordRepository.save(new Record(amount, currency, date, description, type));
+        }
+
         return new RecordView(res);
     }
 

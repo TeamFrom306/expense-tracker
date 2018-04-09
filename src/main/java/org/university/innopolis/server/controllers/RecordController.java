@@ -15,7 +15,7 @@ import org.university.innopolis.server.services.RecordService;
 import java.util.Date;
 
 @Controller
-@RequestMapping(path="api/user")
+@RequestMapping(path="api/")
 public class RecordController {
 
     private RecordService recordService;
@@ -29,9 +29,17 @@ public class RecordController {
     ResponseEntity addExpense(@RequestParam String description,
                               @RequestParam int amount,
                               @RequestParam Currency currency,
-                              @RequestParam Date date,
-                              @RequestParam Type type) {
+                              @RequestParam Date date) {
         return ResponseEntity.ok(recordService.addExpense(description, amount,
-                currency, date, type));
+                currency, date, Type.EXPENSE));
+    }
+
+    @PostMapping(path="add/income")
+    ResponseEntity addIncome(@RequestParam String description,
+                             @RequestParam int amount,
+                             @RequestParam Currency currency,
+                             @RequestParam Date date) {
+        return ResponseEntity.ok(recordService.addIncome(description, amount,
+                currency, date, Type.INCOME));
     }
 }
