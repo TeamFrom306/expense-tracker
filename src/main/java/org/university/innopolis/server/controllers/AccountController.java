@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.university.innopolis.server.services.AccountService;
+import org.university.innopolis.server.services.BadCredentialsException;
 import org.university.innopolis.server.services.DuplicatedUserException;
 import org.university.innopolis.server.views.AccountView;
 
@@ -39,6 +40,17 @@ public class AccountController {
         } catch (DuplicatedUserException e) {
             //TODO response
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    @PostMapping(path = "/login")
+    ResponseEntity login(@RequestParam String login,
+                         @RequestParam String password) {
+        try {
+            AccountView account = accountService.authAccount(login, password);
+            return ResponseEntity.ok(account);
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }

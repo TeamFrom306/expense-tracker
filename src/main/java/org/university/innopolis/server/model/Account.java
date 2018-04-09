@@ -21,6 +21,7 @@ public class Account {
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Category> categories = new ArrayList<>();
+    private String token;
 
     protected Account() {
         // Empty for JPA
@@ -53,5 +54,13 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
