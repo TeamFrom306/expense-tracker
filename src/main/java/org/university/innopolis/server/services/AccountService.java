@@ -15,12 +15,20 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public void createAccount(String login) {
-        accountRepository.save(new Account(login));
+    public AccountView createAccount(String login, String password) throws DuplicatedUserException {
+        if (containsLogin(login))
+            throw new DuplicatedUserException(login);
+
+        Account res = accountRepository.save(new Account(login, password));
+        return new AccountView(res);
     }
 
-    public AccountView getAccountById(int id) {
-        Account account = accountRepository.getById(id);
+    private boolean containsLogin(String login) {
+        return accountRepository.getByLogin(login) != null;
+    }
+
+    public AccountView findAccount(String login) {
+        Account account = accountRepository.getByLogin(login);
         if (account == null)
             return null;
         else
