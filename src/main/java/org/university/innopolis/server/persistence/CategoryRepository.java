@@ -5,4 +5,6 @@ import org.university.innopolis.server.model.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer>{
     Category getById(int id);
+
+
 }
