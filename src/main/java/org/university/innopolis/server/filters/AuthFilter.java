@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import org.university.innopolis.server.services.AuthenticationService;
+import org.university.innopolis.server.services.TokenService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,11 +18,11 @@ import java.io.IOException;
 public class AuthFilter extends GenericFilterBean {
     private static final String TOKEN_HEADER = "Authorization";
 
-    private final AuthenticationService authService;
+    private final TokenService tokenService;
 
     @Autowired
-    public AuthFilter(AuthenticationService authService) {
-        this.authService = authService;
+    public AuthFilter(AuthenticationService authService, TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class AuthFilter extends GenericFilterBean {
             IOException {
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
-        String authHeader = request.getHeader(TOKEN_HEADER);
+        final String authHeader = request.getHeader(TOKEN_HEADER);
 
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -39,12 +40,15 @@ public class AuthFilter extends GenericFilterBean {
             response.sendError(401, "Missing Authorization header");
             return;
         } else {
-            authHeader = authHeader.substring(7);
-            if (!authService.isAuthorized(authHeader)) {
+            final String token = authHeader.substring(7);
+            int accountId = tokenService.getAccountId(token);
+
+            if (accountId == -1) {
                 response.setHeader("Access-Control-Allow-Origin", "*");
                 response.sendError(401, "Invalid token");
                 return;
             }
+            request.setAttribute("accountId", accountId);
         }
 
         chain.doFilter(req, res);
