@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
+import org.university.innopolis.server.services.AccountService;
 import org.university.innopolis.server.services.RecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongCurrencyTypeException;
@@ -24,17 +22,20 @@ import java.util.Date;
 public class RecordController {
 
     private RecordService recordService;
+    private AccountService accountService;
 
     @Autowired
-    public RecordController(RecordService recordService) {
+    public RecordController(RecordService recordService, AccountService accountService) {
         this.recordService = recordService;
+        this.accountService = accountService;
     }
 
-    @PostMapping(path="/expense")
+    @PostMapping(path="/expenses")
     ResponseEntity addExpense(@RequestParam String description,
                               @RequestParam double amount,
                               @RequestParam Currency currency,
-                              @RequestParam String date) {
+                              @RequestParam long date,
+                              @RequestAttribute int accountId) {
         try {
             RecordView res = recordService.addRecord(
                     description,
@@ -42,23 +43,22 @@ public class RecordController {
                     currency,
                     date,
                     Type.EXPENSE);
-
+            accountService.withdrawMoney(accountId, amount);
             return ResponseEntity.ok(res);
         } catch (WrongDateParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
         } catch (WrongAmountValueException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
-        } catch (WrongCurrencyTypeException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid currency value");
         }
 
     }
 
-    @PostMapping(path="income")
+    @PostMapping(path="/incomes")
     ResponseEntity addIncome(@RequestParam String description,
                              @RequestParam double amount,
                              @RequestParam Currency currency,
-                             @RequestParam String date) {
+                             @RequestParam long date,
+                             @RequestAttribute int accountId) {
         try {
             RecordView res = recordService.addRecord(
                     description,
@@ -66,13 +66,12 @@ public class RecordController {
                     currency,
                     date,
                     Type.INCOME);
+            accountService.addMoney(accountId, amount);
             return ResponseEntity.ok(res);
         } catch (WrongDateParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
         } catch (WrongAmountValueException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
-        } catch (WrongCurrencyTypeException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid currency value");
         }
     }
 

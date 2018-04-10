@@ -13,6 +13,7 @@ import org.university.innopolis.server.views.RecordView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @Service
@@ -27,15 +28,12 @@ public class RecordService {
     public RecordView addRecord(String description,
                                 double amount,
                                 Currency currency,
-                                String date,
-                                Type type) throws WrongDateParameterException,
-                                            WrongAmountValueException,
-                                            WrongCurrencyTypeException{
+                                long date,
+                                Type type) throws WrongAmountValueException,
+                                                WrongDateParameterException{
 
         checkAmount(amount);
-        Date properDate = StringToDate(date);
-        checkCurrency(currency);
-
+        Date properDate = convertDate(date);
         Record res = new Record(amount, currency, properDate, type);
         if (!(description == null || "".equals(description))) {
             res.setDescription(description);
@@ -58,30 +56,18 @@ public class RecordService {
         return recordViews;
     }
 
-    private Date StringToDate(String date) throws WrongDateParameterException {
-        try {
-            Date properDate = new SimpleDateFormat("dd-MM-yyyy").parse(date);
-            return properDate;
-        } catch (ParseException e) {
-            throw new WrongDateParameterException(date);
-        }
-    }
-
     private void checkAmount(double amount) throws WrongAmountValueException {
         if (amount <= 0.0)
             throw new WrongAmountValueException(amount);
     }
 
-    private void checkCurrency(Currency currency) throws WrongCurrencyTypeException {
-        boolean flag = false;
-        for (Currency c: Currency.values()) {
-            if (c.name().equals(currency)) {
-                flag = true;
-                break;
-            }
+    private Date convertDate(long date) throws WrongDateParameterException {
+        if (date <= 0) {
+            throw new WrongDateParameterException(Long.toString(date));
         }
 
-        if(!flag)
-            throw new WrongCurrencyTypeException(currency);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        return calendar.getTime();
     }
 }

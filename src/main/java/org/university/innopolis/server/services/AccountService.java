@@ -40,4 +40,14 @@ public class AccountService {
         Account account = accountRepository.getByIdAndLogin(accountId, login);
         return account != null;
     }
+
+    public void withdrawMoney(int accountId, double amount) {
+        Account account = accountRepository.getById(accountId);
+        accountRepository.updateBalanceById(accountId, account.getBalance() - amount);
+    }
+
+    public void addMoney(int accountId, double amount) {
+        Account account = accountRepository.getById(accountId);
+        accountRepository.updateBalanceById(accountId, account.getBalance() + amount);
+    }
 }
