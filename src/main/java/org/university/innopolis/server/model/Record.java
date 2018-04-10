@@ -15,7 +15,7 @@ public class Record {
     @GenericGenerator(name="recordIncrement", strategy="increment")
     private int id;
     private String description;
-    private int amount;
+    private double amount;
     private Currency currency;
     private Date date;
     private Type type;
@@ -30,13 +30,13 @@ public class Record {
     protected Record() {
     }
 
-    public Record(int amount, Currency currency, Date date, Type type) {
+    public Record(double amount, Currency currency, Date date, Type type) {
         this.amount = amount;
         this.currency = currency;
         this.date = date;
         this.type = type;
     }
-    public Record(int amount, Currency currency, Date date, String description, Type type) {
+    public Record(double amount, Currency currency, Date date, String description, Type type) {
         this.amount = amount;
         this.currency = currency;
         this.date = date;
@@ -53,11 +53,11 @@ public class Record {
         this.description = description;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
