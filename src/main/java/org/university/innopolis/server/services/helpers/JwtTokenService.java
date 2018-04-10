@@ -1,13 +1,13 @@
 package org.university.innopolis.server.services.helpers;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.university.innopolis.server.services.exceptions.CorruptedTokenException;
+import org.university.innopolis.server.services.exceptions.ExpiredTokenException;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Service
@@ -17,25 +17,33 @@ public class JwtTokenService implements TokenService {
     @Value("${keyword}")
     private String keyword;
 
+    @Value("${expiration-time}")
+    private int expTime;
+
     public String generateToken(String login, int id) {
+        Date expDate = new Date(new Date().getTime() + expTime * 1000);
+
+
         return Jwts.builder()
                 .setSubject(login)
                 .claim("id", id)
                 .setIssuedAt(new Date())
+                .setExpiration(expDate)
                 .signWith(SignatureAlgorithm.HS256, keyword).compact();
     }
 
     @Override
-    public int getAccountId(String token) {
+    public void validateToken(String token) throws
+            ExpiredTokenException,
+            CorruptedTokenException {
         try {
-            final Claims claims = Jwts.parser()
+            Jwts.parser()
                     .setSigningKey(keyword)
-                    .parseClaimsJws(token)
-                    .getBody();
-
-            return claims.get("id", Integer.class);
+                    .parseClaimsJws(token);
         } catch (SignatureException e) {
-            return -1;
+            throw new CorruptedTokenException();
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredTokenException(e.getMessage());
         }
     }
 }
