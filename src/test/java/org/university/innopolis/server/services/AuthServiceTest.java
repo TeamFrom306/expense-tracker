@@ -11,9 +11,7 @@ import org.university.innopolis.server.services.exceptions.DuplicatedUserExcepti
 import org.university.innopolis.server.services.helpers.ShaHashEncoder;
 import org.university.innopolis.server.views.AccountView;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class})
@@ -27,6 +25,7 @@ public class AuthServiceTest {
 
     private static String password = "password";
     private static String login = "login";
+    private static int id = -1;
     private static AccountView view;
 
     @Test
@@ -46,9 +45,42 @@ public class AuthServiceTest {
         AccountView res = authService.getAuthentication(login, password);
         assertEquals(login, res.getLogin());
         assertNotNull(res.getToken());
+        assertNotEquals(-1, authService.getAccountId(res.getToken()));
+        id = authService.getAccountId(res.getToken());
         view = res;
     }
 
+    @Test(expected = BadCredentialsException.class)
+    public void test03() throws BadCredentialsException {
+        authService.getAuthentication("notlogin", password);
+    }
+
+    @Test(expected = BadCredentialsException.class)
+    public void test04() throws BadCredentialsException {
+        authService.getAuthentication(login, "notpassword");
+    }
+
+    @Test
+    public void test05() throws BadCredentialsException {
+        AccountView res = authService.getAuthentication(login, password);
+        assertEquals(login, res.getLogin());
+        assertEquals(view.getToken(), res.getToken());
+        view = res;
+    }
+
+    @Test
+    public void test06() throws BadCredentialsException {
+        assertNotEquals(-1, id);
+        assertEquals(id, authService.getAccountId(view.getToken()));
+        authService.revokeToken(view.getToken());
+        assertEquals(-1, authService.getAccountId(view.getToken()));
+    }
+
+    @Test
+    public void test07() throws BadCredentialsException {
+        assertTrue(authService.isAuthorized(id, login));
+        assertFalse(authService.isAuthorized(id + 1, login));
+    }
 //    @Test
 //    public void getAccountId() {
 //    }
