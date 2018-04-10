@@ -64,6 +64,7 @@ public class AuthFilter extends GenericFilterBean {
         } else {
             final String token = authHeader.substring(7);
             if (!isValid(response, token)) {
+                accountService.revokeToken(token);
                 return;
             }
 

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.university.innopolis.server.services.exceptions.CorruptedTokenException;
 import org.university.innopolis.server.services.exceptions.ExpiredTokenException;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Service
@@ -40,7 +39,9 @@ public class JwtTokenService implements TokenService {
             Jwts.parser()
                     .setSigningKey(keyword)
                     .parseClaimsJws(token);
-        } catch (SignatureException e) {
+        } catch (SignatureException | 
+                MalformedJwtException |
+                UnsupportedJwtException e) {
             throw new CorruptedTokenException();
         } catch (ExpiredJwtException e) {
             throw new ExpiredTokenException(e.getMessage());
