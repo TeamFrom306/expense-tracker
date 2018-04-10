@@ -4,44 +4,59 @@ import org.junit.Test;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 
 public class CredentialValidatorTest {
-
     @Test(expected = BadCredentialsException.class)
-    public void validatePassword00() throws BadCredentialsException {
-        CredentialValidator.validatePassword("12");
+    public void validateCredentials00() throws BadCredentialsException {
+        String password = "12";
+        String login = "valid";
+        CredentialValidator.validateCredentials(login, password);
     }
 
     @Test(expected = BadCredentialsException.class)
-    public void validatePassword01() throws BadCredentialsException {
-        CredentialValidator.validatePassword("12345678901234567890123456");
+    public void validateCredentials01() throws BadCredentialsException {
+        String password = "12345678901234567890123456";
+        String login = "valid";
+        CredentialValidator.validateCredentials(login, password);
     }
 
     @Test
-    public void validatePassword02() throws BadCredentialsException {
-        CredentialValidator.validatePassword("123456");
+    public void validateCredentials02() throws BadCredentialsException {
+        String password = "123456";
+        String login = "valid";
+        CredentialValidator.validateCredentials(login, password);
     }
 
     @Test(expected = BadCredentialsException.class)
-    public void validateLogin00() throws BadCredentialsException {
-        CredentialValidator.validateLogin("12");
+    public void validateCredentials03() throws BadCredentialsException {
+        String password = "valid_password";
+        String login = "12";
+        CredentialValidator.validateCredentials(login, password);
     }
 
     @Test
-    public void validateLogin01() throws BadCredentialsException {
-        CredentialValidator.validateLogin("a12");
+    public void validateCredentials04() throws BadCredentialsException {
+        String password = "valid_password";
+        String login = "a12";
+        CredentialValidator.validateCredentials(login, password);
     }
 
     @Test(expected = BadCredentialsException.class)
-    public void validateLogin02() throws BadCredentialsException {
-        CredentialValidator.validateLogin("a");
+    public void validateCredentials05() throws BadCredentialsException {
+        String password = "valid_password";
+        String login = "a";
+        CredentialValidator.validateCredentials(login, password);
     }
 
     @Test(expected = BadCredentialsException.class)
-    public void validateLogin03() throws BadCredentialsException {
-        CredentialValidator.validateLogin("a23456789012345678901");
+    public void validateCredentials06() throws BadCredentialsException {
+        String password = "valid_password";
+        String login = "a23456789012345678901";
+        CredentialValidator.validateCredentials(login, password);
     }
 
     @Test
-    public void validateLogin04() throws BadCredentialsException {
-        CredentialValidator.validateLogin("a2345678901234567890");
+    public void validateCredentials07() throws BadCredentialsException {
+        String password = "123456";
+        String login = "a2345678901234567890";
+        CredentialValidator.validateCredentials(login, password);
     }
 }

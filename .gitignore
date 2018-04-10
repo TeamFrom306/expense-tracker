@@ -16,3 +16,5 @@ hs_err_pid*
 \out/
 test.mv.db
 test.trace.db
+
+build/
