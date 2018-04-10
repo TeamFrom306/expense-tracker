@@ -12,6 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.services.RecordService;
+import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
+import org.university.innopolis.server.services.exceptions.WrongCurrencyTypeException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
 
@@ -28,7 +30,7 @@ public class RecordController {
         this.recordService = recordService;
     }
 
-    @PostMapping(path="/add/expense")
+    @PostMapping(path="/expense")
     ResponseEntity addExpense(@RequestParam String description,
                               @RequestParam double amount,
                               @RequestParam Currency currency,
@@ -44,11 +46,15 @@ public class RecordController {
             return ResponseEntity.ok(res);
         } catch (WrongDateParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
+        } catch (WrongAmountValueException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
+        } catch (WrongCurrencyTypeException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid currency value");
         }
 
     }
 
-    @PostMapping(path="add/income")
+    @PostMapping(path="income")
     ResponseEntity addIncome(@RequestParam String description,
                              @RequestParam double amount,
                              @RequestParam Currency currency,
@@ -63,15 +69,19 @@ public class RecordController {
             return ResponseEntity.ok(res);
         } catch (WrongDateParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
+        } catch (WrongAmountValueException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
+        } catch (WrongCurrencyTypeException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid currency value");
         }
     }
 
-    @GetMapping(path="get/expenses")
+    @GetMapping(path="/expenses")
     ResponseEntity getExpenses() {
         return ResponseEntity.ok(recordService.getRecords(Type.EXPENSE));
     }
 
-    @GetMapping(path="get/incomes")
+    @GetMapping(path="/incomes")
     ResponseEntity getIncomes() {
         return ResponseEntity.ok(recordService.getRecords(Type.INCOME));
     }

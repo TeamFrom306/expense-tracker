@@ -6,6 +6,8 @@ import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.model.Record;
 import org.university.innopolis.server.persistence.RecordRepository;
+import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
+import org.university.innopolis.server.services.exceptions.WrongCurrencyTypeException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
 
@@ -26,20 +28,20 @@ public class RecordService {
                                 double amount,
                                 Currency currency,
                                 String date,
-                                Type type) throws WrongDateParameterException {
+                                Type type) throws WrongDateParameterException,
+                                            WrongAmountValueException,
+                                            WrongCurrencyTypeException{
 
-        try {
-            Date properDate = StringToDate(date);
-            Record res = new Record(amount, currency, properDate, type);
-            if (!(description == null || "".equals(description))) {
-                res.setDescription(description);
-            }
-            res = recordRepository.save(res);
-            return new RecordView(res);
+        checkAmount(amount);
+        Date properDate = StringToDate(date);
+        checkCurrency(currency);
 
-        } catch (ParseException e) {
-            throw new WrongDateParameterException(date);
+        Record res = new Record(amount, currency, properDate, type);
+        if (!(description == null || "".equals(description))) {
+            res.setDescription(description);
         }
+        res = recordRepository.save(res);
+        return new RecordView(res);
 
 
     }
@@ -56,8 +58,30 @@ public class RecordService {
         return recordViews;
     }
 
-    private Date StringToDate(String date) throws ParseException {
-        Date properDate = new SimpleDateFormat("dd-MM-yyyy").parse(date);
-        return properDate;
+    private Date StringToDate(String date) throws WrongDateParameterException {
+        try {
+            Date properDate = new SimpleDateFormat("dd-MM-yyyy").parse(date);
+            return properDate;
+        } catch (ParseException e) {
+            throw new WrongDateParameterException(date);
+        }
+    }
+
+    private void checkAmount(double amount) throws WrongAmountValueException {
+        if (amount <= 0.0)
+            throw new WrongAmountValueException(amount);
+    }
+
+    private void checkCurrency(Currency currency) throws WrongCurrencyTypeException {
+        boolean flag = false;
+        for (Currency c: Currency.values()) {
+            if (c.name().equals(currency)) {
+                flag = true;
+                break;
+            }
+        }
+
+        if(!flag)
+            throw new WrongCurrencyTypeException(currency);
     }
 }
