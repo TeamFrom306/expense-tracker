@@ -59,4 +59,25 @@ public class CredentialValidatorTest {
         String login = "a2345678901234567890";
         CredentialValidator.validateCredentials(login, password);
     }
+
+    @Test(expected = BadCredentialsException.class)
+    public void validateCredentials08() throws BadCredentialsException {
+        String login = "a23456789012345678901";
+        CredentialValidator.validateCredentials(login, null);
+    }
+
+    @Test(expected = BadCredentialsException.class)
+    public void validateCredentials09() throws BadCredentialsException {
+        CredentialValidator.validateCredentials(null, "password");
+    }
+
+    @Test(expected = BadCredentialsException.class)
+    public void validateCredentials10() throws BadCredentialsException {
+        CredentialValidator.validateCredentials("", "password");
+    }
+
+    @Test(expected = BadCredentialsException.class)
+    public void validateCredentials11() throws BadCredentialsException {
+        CredentialValidator.validateCredentials("login", "");
+    }
 }
