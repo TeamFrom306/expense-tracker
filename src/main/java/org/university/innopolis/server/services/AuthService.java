@@ -81,6 +81,11 @@ public class AuthService implements AuthenticationService {
         return account != null;
     }
 
+    @Override
+    public void revokeToken(String token) {
+        accountRepository.setTokenNull(token);
+    }
+
     private boolean containsLogin(String login) {
         return accountRepository.getByLogin(login) != null;
     }

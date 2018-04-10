@@ -14,4 +14,6 @@ public interface AuthenticationService {
     AccountView registerAccount(String login, String password) throws DuplicatedUserException, BadCredentialsException;
 
     boolean isAuthorized(int accountId, String login);
+
+    void revokeToken(String token);
 }
