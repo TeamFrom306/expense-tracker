@@ -11,11 +11,8 @@ import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.services.AccountService;
 import org.university.innopolis.server.services.RecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
-import org.university.innopolis.server.services.exceptions.WrongCurrencyTypeException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
-
-import java.util.Date;
 
 @Controller
 @RequestMapping(path="api/")

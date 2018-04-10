@@ -7,12 +7,9 @@ import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.model.Record;
 import org.university.innopolis.server.persistence.RecordRepository;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
-import org.university.innopolis.server.services.exceptions.WrongCurrencyTypeException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,7 +30,7 @@ public class RecordService {
                                                 WrongDateParameterException{
 
         checkAmount(amount);
-        Date properDate = convertDate(date);
+        Date properDate = convertDate(date * 1000L);
         Record res = new Record(amount, currency, properDate, type);
         if (!(description == null || "".equals(description))) {
             res.setDescription(description);
@@ -65,9 +62,6 @@ public class RecordService {
         if (date <= 0) {
             throw new WrongDateParameterException(Long.toString(date));
         }
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(date);
-        return calendar.getTime();
+        return new Date(date);
     }
 }
