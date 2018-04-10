@@ -19,15 +19,12 @@ import org.university.innopolis.server.views.AccountView;
 @RequestMapping(path = "/api")
 public class AuthenticationController {
     private AuthenticationService authService;
-    private AccountService accountService;
     private EncoderService shaEncoder;
 
     @Autowired
     public AuthenticationController(AuthenticationService authService,
-                                    AccountService accountService,
                                     EncoderService shaEncoder) {
         this.authService = authService;
-        this.accountService = accountService;
         this.shaEncoder = shaEncoder;
     }
 
@@ -35,7 +32,7 @@ public class AuthenticationController {
     ResponseEntity login(@RequestParam String login,
                          @RequestParam String password) {
         try {
-            AccountView account = authService.getAuthAccount(login, shaEncoder.getHash(password));
+            AccountView account = authService.getAuthentication(login, shaEncoder.getHash(password));
             return ResponseEntity.ok(account);
         } catch (BadCredentialsException ignored) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
@@ -46,7 +43,7 @@ public class AuthenticationController {
     ResponseEntity createAccount(@RequestParam String login,
                                  @RequestParam String password) {
         try {
-            return ResponseEntity.ok(accountService.createAccount(login, shaEncoder.getHash(password)));
+            return ResponseEntity.ok(authService.registerAccount(login, shaEncoder.getHash(password)));
         } catch (DuplicatedUserException ignored) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This login is already taken");
         }

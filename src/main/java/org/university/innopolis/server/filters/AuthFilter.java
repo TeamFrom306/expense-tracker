@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import org.university.innopolis.server.services.AuthenticationService;
+import org.university.innopolis.server.services.exceptions.CorruptedTokenException;
+import org.university.innopolis.server.services.exceptions.ExpiredTokenException;
 import org.university.innopolis.server.services.helpers.TokenService;
 
 import javax.servlet.FilterChain;
@@ -28,6 +30,24 @@ public class AuthFilter extends GenericFilterBean {
         this.accountService = accountService;
     }
 
+    private void sendError(HttpServletResponse response, String message) throws IOException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.sendError(401, message);
+    }
+
+    private boolean isValid(HttpServletResponse response, String token) throws IOException {
+        try {
+            tokenService.validateToken(token);
+            return true;
+        } catch (ExpiredTokenException e) {
+            sendError(response, e.getMessage());
+            return false;
+        } catch (CorruptedTokenException e) {
+            sendError(response, "Token is corrupted");
+            return false;
+        }
+    }
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws
             ServletException,
@@ -39,19 +59,17 @@ public class AuthFilter extends GenericFilterBean {
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else if (authHeader == null) {
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.sendError(401, "Missing Authorization header");
+            sendError(response, "Missing Authorization header");
             return;
         } else {
             final String token = authHeader.substring(7);
-            int accountId = accountService.getAccountId(token);
-            int tokenAccountId = tokenService.getAccountId(token);
-            if (accountId != tokenAccountId) {
-                accountId = -1;
+            if (!isValid(response, token)) {
+                return;
             }
+
+            int accountId = accountService.getAccountId(token);
             if (accountId == -1) {
-                response.setHeader("Access-Control-Allow-Origin", "*");
-                response.sendError(401, "Invalid token");
+                sendError(response, "Invalid token");
                 return;
             }
             request.setAttribute("accountId", accountId);

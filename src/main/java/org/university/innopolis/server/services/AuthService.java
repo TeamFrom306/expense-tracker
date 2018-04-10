@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.university.innopolis.server.model.Account;
 import org.university.innopolis.server.persistence.AccountRepository;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
+import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
 import org.university.innopolis.server.services.helpers.TokenService;
 import org.university.innopolis.server.views.AccountView;
 
@@ -39,12 +40,32 @@ public class AuthService implements AuthenticationService {
     }
 
     @Override
-    public AccountView getAuthAccount(String login, String password) throws BadCredentialsException {
+    public AccountView registerAccount(String login, String password) throws DuplicatedUserException {
+        if (containsLogin(login))
+            throw new DuplicatedUserException(login);
+
+        Account res = accountRepository.save(new Account(login, password));
+        return new AccountView(res);
+    }
+
+    @Override
+    public AccountView getAuthentication(String login, String password) throws BadCredentialsException {
         Account account = accountRepository.getByLogin(login);
         if (account == null || !checkPasswords(password, account))
             throw new BadCredentialsException();
-        storeToken(account, login);
+        if (account.getToken() == null)
+            storeToken(account, login);
         return new AccountView(account);
+    }
+
+    @Override
+    public boolean isAuthorized(int accountId, String login) {
+        Account account = accountRepository.getByIdAndLogin(accountId, login);
+        return account != null;
+    }
+
+    private boolean containsLogin(String login) {
+        return accountRepository.getByLogin(login) != null;
     }
 
     private boolean checkPasswords(String password, Account account) {
