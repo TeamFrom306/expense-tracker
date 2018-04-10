@@ -6,6 +6,7 @@ import org.university.innopolis.server.model.Account;
 import org.university.innopolis.server.persistence.AccountRepository;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
+import org.university.innopolis.server.services.helpers.CredentialValidator;
 import org.university.innopolis.server.services.helpers.TokenService;
 import org.university.innopolis.server.views.AccountView;
 
@@ -39,8 +40,14 @@ public class AuthService implements AuthenticationService {
         }
     }
 
+
     @Override
-    public AccountView registerAccount(String login, String password) throws DuplicatedUserException {
+    public AccountView registerAccount(String login, String password) throws
+            DuplicatedUserException,
+            BadCredentialsException {
+
+        CredentialValidator.validateCredentials(login, password);
+
         if (containsLogin(login))
             throw new DuplicatedUserException(login);
 
@@ -50,6 +57,8 @@ public class AuthService implements AuthenticationService {
 
     @Override
     public AccountView getAuthentication(String login, String password) throws BadCredentialsException {
+        CredentialValidator.validateCredentials(login, password);
+
         Account account = accountRepository.getByLogin(login);
         if (account == null || !checkPasswords(password, account))
             throw new BadCredentialsException();

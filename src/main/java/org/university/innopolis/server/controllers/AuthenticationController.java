@@ -46,6 +46,8 @@ public class AuthenticationController {
             return ResponseEntity.ok(authService.registerAccount(login, shaEncoder.getHash(password)));
         } catch (DuplicatedUserException ignored) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This login is already taken");
+        } catch (BadCredentialsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid login or password");
         }
     }
 
