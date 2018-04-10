@@ -19,10 +19,13 @@ public class AuthFilter extends GenericFilterBean {
     private static final String TOKEN_HEADER = "Authorization";
 
     private final TokenService tokenService;
+    private AuthenticationService accountService;
 
     @Autowired
-    public AuthFilter(AuthenticationService authService, TokenService tokenService) {
+    public AuthFilter(TokenService tokenService,
+                      AuthenticationService accountService) {
         this.tokenService = tokenService;
+        this.accountService = accountService;
     }
 
     @Override
@@ -41,8 +44,11 @@ public class AuthFilter extends GenericFilterBean {
             return;
         } else {
             final String token = authHeader.substring(7);
-            int accountId = tokenService.getAccountId(token);
-
+            int accountId = accountService.getAccountId(token);
+            int tokenAccountId = tokenService.getAccountId(token);
+            if (accountId != tokenAccountId) {
+                accountId = -1;
+            }
             if (accountId == -1) {
                 response.setHeader("Access-Control-Allow-Origin", "*");
                 response.sendError(401, "Invalid token");

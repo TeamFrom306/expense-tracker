@@ -7,4 +7,6 @@ public interface AuthenticationService {
     AccountView getAuthAccount(String login, String password) throws BadCredentialsException;
 
     int getAccountId(String token);
+
+    void revokeTokenById(int id);
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,5 +50,11 @@ public class AuthenticationController {
         } catch (DuplicatedUserException ignored) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This login is already taken");
         }
+    }
+
+    @PostMapping(path = "/logout")
+    ResponseEntity logout(@RequestAttribute int accountId) {
+        authService.revokeTokenById(accountId);
+        return ResponseEntity.ok().build();
     }
 }

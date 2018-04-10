@@ -19,6 +19,7 @@ public class Application {
         final FilterRegistrationBean<AuthFilter> authFilterBean = new FilterRegistrationBean<>();
         authFilterBean.setFilter(authFilter);
         authFilterBean.addUrlPatterns("/api/user/*");
+        authFilterBean.addUrlPatterns("/api/logout/*");
 
         return authFilterBean;
     }

@@ -23,8 +23,19 @@ public class AuthService implements AuthenticationService {
 
     @Override
     public int getAccountId(String token) {
+        if (token == null)
+            return -1;
         Account account = accountRepository.getByToken(token);
         return account == null ? -1 : account.getId();
+    }
+
+    @Override
+    public void revokeTokenById(int id) {
+        Account account = accountRepository.getById(id);
+        if (account != null) {
+            account.setToken(null);
+            accountRepository.save(account);
+        }
     }
 
     @Override
