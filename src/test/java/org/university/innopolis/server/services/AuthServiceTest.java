@@ -87,7 +87,8 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void test09() throws BadCredentialsException {
+    public void test09() throws BadCredentialsException, InterruptedException {
+        Thread.sleep(500);
         AccountView res = authService.getAuthentication(login, password);
         assertNotEquals(view.getToken(), res.getToken());
         id = authService.getAccountId(res.getToken());
