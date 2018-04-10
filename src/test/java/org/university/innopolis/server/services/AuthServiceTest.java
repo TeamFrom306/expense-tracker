@@ -63,13 +63,12 @@ public class AuthServiceTest {
     @Test
     public void test05() throws BadCredentialsException {
         AccountView res = authService.getAuthentication(login, password);
-        assertEquals(login, res.getLogin());
+        assertEquals(view.getLogin(), res.getLogin());
         assertEquals(view.getToken(), res.getToken());
-        view = res;
     }
 
     @Test
-    public void test06() throws BadCredentialsException {
+    public void test06() {
         assertNotEquals(-1, id);
         assertEquals(id, authService.getAccountId(view.getToken()));
         authService.revokeToken(view.getToken());
@@ -77,23 +76,22 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void test07() throws BadCredentialsException {
+    public void test07() {
         assertTrue(authService.isAuthorized(id, login));
         assertFalse(authService.isAuthorized(id + 1, login));
     }
-//    @Test
-//    public void getAccountId() {
-//    }
-//
-//    @Test
-//    public void revokeTokenById() {
-//    }
-//
-//    @Test
-//    public void isAuthorized() {
-//    }
-//
-//    @Test
-//    public void revokeToken() {
-//    }
+
+    @Test
+    public void test08() {
+        assertEquals(-1, authService.getAccountId(null));
+    }
+
+    @Test
+    public void test09() throws BadCredentialsException {
+        AccountView res = authService.getAuthentication(login, password);
+        assertNotEquals(view.getToken(), res.getToken());
+        id = authService.getAccountId(res.getToken());
+        authService.revokeTokenById(id);
+        assertEquals(-1, authService.getAccountId(res.getToken()));
+    }
 }
