@@ -17,17 +17,19 @@ import org.university.innopolis.server.views.AccountView;
 @RequestMapping(path = "/api")
 public class AccountController {
     private AccountService accountService;
+    private AuthenticationService authService;
 
     @Autowired
     public AccountController(AccountService accountService, AuthenticationService authService) {
         this.accountService = accountService;
+        this.authService = authService;
     }
 
 
     @GetMapping(path = "/user")
     ResponseEntity getAccount(@RequestParam String login,
                               @RequestAttribute int accountId) {
-        if (!accountService.isAuthorized(accountId, login))
+        if (!authService.isAuthorized(accountId, login))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         AccountView res = accountService.findAccount(login);
         if (res == null)
