@@ -7,6 +7,7 @@ import org.university.innopolis.server.persistence.AccountRepository;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
 import org.university.innopolis.server.services.helpers.CredentialValidator;
+import org.university.innopolis.server.services.helpers.EncoderService;
 import org.university.innopolis.server.services.helpers.TokenService;
 import org.university.innopolis.server.views.AccountView;
 
@@ -16,11 +17,15 @@ import java.util.Objects;
 public class AuthService implements AuthenticationService {
     private AccountRepository accountRepository;
     private TokenService tokenService;
+    private EncoderService shaEncoder;
 
     @Autowired
-    public AuthService(AccountRepository accountRepository, TokenService tokenService) {
+    public AuthService(AccountRepository accountRepository,
+                       TokenService tokenService,
+                       EncoderService shaEncoder) {
         this.accountRepository = accountRepository;
         this.tokenService = tokenService;
+        this.shaEncoder = shaEncoder;
     }
 
     @Override
@@ -45,13 +50,14 @@ public class AuthService implements AuthenticationService {
     public AccountView registerAccount(String login, String password) throws
             DuplicatedUserException,
             BadCredentialsException {
-
         CredentialValidator.validateCredentials(login, password);
+
+        final String encodedPassword = shaEncoder.getHash(password);
 
         if (containsLogin(login))
             throw new DuplicatedUserException(login);
 
-        Account res = accountRepository.save(new Account(login, password));
+        Account res = accountRepository.save(new Account(login, encodedPassword));
         return new AccountView(res);
     }
 
@@ -59,8 +65,10 @@ public class AuthService implements AuthenticationService {
     public AccountView getAuthentication(String login, String password) throws BadCredentialsException {
         CredentialValidator.validateCredentials(login, password);
 
+        final String encodedPassword = shaEncoder.getHash(password);
+
         Account account = accountRepository.getByLogin(login);
-        if (account == null || !checkPasswords(password, account))
+        if (account == null || !checkPasswords(encodedPassword, account))
             throw new BadCredentialsException();
         if (account.getToken() == null)
             storeToken(account, login);
