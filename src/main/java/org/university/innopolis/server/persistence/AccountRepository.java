@@ -20,4 +20,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Transactional
     @Query(value = "UPDATE Account a SET a.token = NULL WHERE a.token = :token")
     void setTokenNull(@Param("token") String token);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Account ac SET ac.balance = :amount WHERE ac.id = :id")
+    void updateBalanceById(@Param("id") int id, @Param("amount") double amount);
 }

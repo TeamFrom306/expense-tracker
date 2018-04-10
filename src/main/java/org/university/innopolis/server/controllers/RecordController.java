@@ -1,51 +1,84 @@
 package org.university.innopolis.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
+import org.university.innopolis.server.services.AccountService;
 import org.university.innopolis.server.services.RecordService;
-
-import java.util.Date;
+import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
+import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
+import org.university.innopolis.server.views.RecordView;
 
 @Controller
 @RequestMapping(path="api/")
 public class RecordController {
 
     private RecordService recordService;
+    private AccountService accountService;
 
     @Autowired
-    public RecordController(RecordService recordService) {
+    public RecordController(RecordService recordService, AccountService accountService) {
         this.recordService = recordService;
+        this.accountService = accountService;
     }
 
-    @PostMapping(path="/add/expense")
+    @PostMapping(path="/expenses")
     ResponseEntity addExpense(@RequestParam String description,
-                              @RequestParam int amount,
+                              @RequestParam double amount,
                               @RequestParam Currency currency,
-                              @RequestParam Date date) {
-        return ResponseEntity.ok(recordService.addRecord(
-                description,
-                amount,
-                currency,
-                date,
-                Type.EXPENSE));
+                              @RequestParam long date,
+                              @RequestAttribute int accountId) {
+        try {
+            RecordView res = recordService.addRecord(
+                    description,
+                    amount,
+                    currency,
+                    date,
+                    Type.EXPENSE);
+            accountService.withdrawMoney(accountId, amount);
+            return ResponseEntity.ok(res);
+        } catch (WrongDateParameterException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
+        } catch (WrongAmountValueException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
+        }
+
     }
 
-    @PostMapping(path="add/income")
+    @PostMapping(path="/incomes")
     ResponseEntity addIncome(@RequestParam String description,
-                             @RequestParam int amount,
+                             @RequestParam double amount,
                              @RequestParam Currency currency,
-                             @RequestParam Date date) {
-        return ResponseEntity.ok(recordService.addRecord(
-                description,
-                amount,
-                currency,
-                date,
-                Type.INCOME));
+                             @RequestParam long date,
+                             @RequestAttribute int accountId) {
+        try {
+            RecordView res = recordService.addRecord(
+                    description,
+                    amount,
+                    currency,
+                    date,
+                    Type.INCOME);
+            accountService.addMoney(accountId, amount);
+            return ResponseEntity.ok(res);
+        } catch (WrongDateParameterException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
+        } catch (WrongAmountValueException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
+        }
+    }
+
+    @GetMapping(path="/expenses")
+    ResponseEntity getExpenses() {
+        return ResponseEntity.ok(recordService.getRecords(Type.EXPENSE));
+    }
+
+    @GetMapping(path="/incomes")
+    ResponseEntity getIncomes() {
+        return ResponseEntity.ok(recordService.getRecords(Type.INCOME));
     }
 }
