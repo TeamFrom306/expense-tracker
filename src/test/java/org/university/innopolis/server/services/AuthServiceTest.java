@@ -88,11 +88,16 @@ public class AuthServiceTest {
 
     @Test
     public void test09() throws BadCredentialsException, InterruptedException {
-        Thread.sleep(500);
+        Thread.sleep(1000);
         AccountView res = authService.getAuthentication(login, password);
         assertNotEquals(view.getToken(), res.getToken());
         id = authService.getAccountId(res.getToken());
         authService.revokeTokenById(id);
         assertEquals(-1, authService.getAccountId(res.getToken()));
+    }
+
+    @Test
+    public void test10() {
+        authService.revokeTokenById(-1);
     }
 }
