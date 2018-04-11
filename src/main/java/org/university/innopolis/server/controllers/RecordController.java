@@ -15,7 +15,7 @@ import org.university.innopolis.server.services.exceptions.WrongDateParameterExc
 import org.university.innopolis.server.views.RecordView;
 
 @Controller
-@RequestMapping(path="api/")
+@RequestMapping(path="api/records/")
 public class RecordController {
 
     private RecordService recordService;
@@ -80,5 +80,10 @@ public class RecordController {
     @GetMapping(path="/incomes")
     ResponseEntity getIncomes() {
         return ResponseEntity.ok(recordService.getRecords(Type.INCOME));
+    }
+
+    @GetMapping(path="/all")
+    ResponseEntity getAllRecords() {
+        return ResponseEntity.ok(recordService.getAllRecords());
     }
 }

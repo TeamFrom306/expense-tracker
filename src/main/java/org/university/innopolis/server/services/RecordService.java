@@ -10,8 +10,9 @@ import org.university.innopolis.server.services.exceptions.WrongAmountValueExcep
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
 
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class RecordService {
@@ -41,13 +42,26 @@ public class RecordService {
 
     }
 
-    public RecordView[] getRecords(Type type) {
-        Record[] records = recordRepository.getByType(type);
+    public List<RecordView> getRecords(Type type) {
+        List<Record> records = recordRepository.getByType(type);
 
-        RecordView[] recordViews = new RecordView[records.length];
+        List<RecordView> recordViews = new ArrayList<>();
 
-        for(int i = 0; i < records.length; i++) {
-            recordViews[i] = new RecordView(records[i]);
+        for(Record r: records) {
+            recordViews.add(new RecordView(r));
+        }
+
+        return recordViews;
+    }
+
+    public List<RecordView> getAllRecords() {
+
+        List<Record> records = recordRepository.findAll();
+
+        List<RecordView> recordViews = new ArrayList<>();
+
+        for(Record r: records) {
+            recordViews.add(new RecordView(r));
         }
 
         return recordViews;
