@@ -13,7 +13,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'jacoco'
-//apply plugin: 'io.spring.dependency-management'
+apply plugin: 'io.spring.dependency-management'
 
 sourceCompatibility = 1.8
 
@@ -27,7 +27,6 @@ dependencies {
     compile 'io.jsonwebtoken:jjwt:0.9.0'
     compile 'com.google.guava:guava:24.1-jre'
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile "org.slf4j:slf4j-simple:1.7.9"
     testCompile group: 'org.springframework', name: 'spring-test', version: '5.0.5.RELEASE'
 }
 
