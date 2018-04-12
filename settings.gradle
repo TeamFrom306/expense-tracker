@@ -1,2 +1,6 @@
-rootProject.name = 'expense-tracker'
+rootProject.name = 'main'
+include 'common'
+include 'persistence'
+include 'services'
+include 'front'
 
