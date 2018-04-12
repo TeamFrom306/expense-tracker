@@ -26,6 +26,6 @@ These instructions will get you a copy of the project up and running on your loc
 - Anton Prokopev - [prokop7](https://github.com/prokop7)
 - Kamill Gusmanov - [camilldesmoulins](https://github.com/camilldesmoulins) 
 
-##License
+## License
 
 This project is licensed under the MIT License.
