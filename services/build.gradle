@@ -1,0 +1,19 @@
+group 'org.university.innopolis.org.university.innopolis.server'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project (':persistence')
+
+    compile 'io.jsonwebtoken:jjwt:0.9.0'
+    compile 'com.google.guava:guava:24.1-jre'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

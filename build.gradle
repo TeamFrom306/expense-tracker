@@ -1,21 +1,7 @@
-group 'org.university.innopolis'
+group 'org.university.innopolis.org.university.innopolis.server'
 version '1.0-SNAPSHOT'
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
-    }
-}
-
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'jacoco'
 
 bootJar {
     baseName = 'gs-rest-service'
@@ -30,20 +16,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile group: 'com.h2database', name: 'h2', version: '1.4.196'
-    compile 'com.google.guava:guava:24.1-jre'
-    compile 'io.jsonwebtoken:jjwt:0.9.0'
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-}
-
-sourceSets {
-    test {
-        java {
-            srcDir "test"
-        }
-    }
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 sourceSets {
