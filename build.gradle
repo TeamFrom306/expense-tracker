@@ -4,10 +4,10 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'jacoco'
 
-bootJar {
-    baseName = 'gs-rest-service'
-    version =  '0.1.0'
-}
+//bootJar {
+//    baseName = 'gs-rest-service'
+//    version =  '0.1.0'
+//}
 
 repositories {
     mavenCentral()
