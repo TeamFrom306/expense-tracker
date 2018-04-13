@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
+import org.university.innopolis.server.model.Account;
+import org.university.innopolis.server.persistence.AccountRepository;
 import org.university.innopolis.server.persistence.RecordRepository;
 import org.university.innopolis.server.model.Record;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
@@ -13,54 +15,76 @@ import org.university.innopolis.server.views.RecordView;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Service
-public class RecordService {
+@Service("addRecordService")
+public class RecordService implements AddRecordService, GetRecordService {
     private RecordRepository recordRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    public RecordService(RecordRepository recordRepository) {
+    public RecordService(RecordRepository recordRepository,
+                         AccountRepository accountRepository) {
         this.recordRepository = recordRepository;
+        this.accountRepository = accountRepository;
     }
 
+    @Override
     public RecordView addRecord(String description,
                                 double amount,
                                 Currency currency,
                                 long date,
-                                Type type) throws WrongAmountValueException,
-                                                WrongDateParameterException{
+                                Type type,
+                                int accountId) throws WrongAmountValueException,
+            WrongDateParameterException {
 
         checkAmount(amount);
         Date properDate = convertDate(date * 1000L);
-        Record res = new Record(amount, currency, properDate, type);
+        Account account = accountRepository.getById(accountId);
+
+        Record record = new Record(amount, currency, properDate, type);
+        record.setAccount(account);
+
         if (!(description == null || "".equals(description))) {
-            res.setDescription(description);
+            record.setDescription(description);
         }
-        res = recordRepository.save(res);
-        return new RecordView(res);
+
+        account.setBalance(account.getBalance() - record.getAmount());
+
+        accountRepository.save(account);
+        record = recordRepository.save(record);
+
+        return new RecordView(record);
 
 
     }
 
-    public List<RecordView> getRecords(Type type) {
-        List<Record> records = recordRepository.getByType(type);
+    @Override
+    public List<RecordView> getRecords(Type type, int accountId) {
+        Account account = accountRepository.getById(accountId);
+        List<Record> records = account.getRecords();
+        records = records
+                .stream()
+                .filter(r -> r.getType() == type)
+                .collect(Collectors.toList());
 
         List<RecordView> recordViews = new ArrayList<>();
 
-        for(Record r: records) {
+        for (Record r : records) {
             recordViews.add(new RecordView(r));
         }
 
         return recordViews;
     }
 
-    public List<RecordView> getAllRecords() {
-
-        List<Record> records = recordRepository.findAll();
+    @Override
+    public List<RecordView> getAllRecords(int accountId) {
+        Account account = accountRepository.getById(accountId);
+        List<Record> records = account.getRecords();
 
         List<RecordView> recordViews = new ArrayList<>();
 
-        for(Record r: records) {
+        for (Record r : records) {
             recordViews.add(new RecordView(r));
         }
 
