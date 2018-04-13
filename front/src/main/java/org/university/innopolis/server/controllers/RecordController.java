@@ -12,6 +12,7 @@ import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.GetRecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
+import org.university.innopolis.server.stat.AvgRecordService;
 import org.university.innopolis.server.views.RecordView;
 
 @Controller
@@ -20,12 +21,15 @@ public class RecordController {
 
     private GetRecordService getRecordService;
     private AddRecordService addRecordService;
+    private AvgRecordService avgRecordService;
 
     @Autowired
     public RecordController(GetRecordService getRecordService,
-                            AddRecordService proxyAddRecordService) {
+                            AddRecordService proxyAddRecordService,
+                            AvgRecordService avgRecordService) {
         this.getRecordService = getRecordService;
         this.addRecordService = proxyAddRecordService;
+        this.avgRecordService = avgRecordService;
     }
 
     @PostMapping(path="/expenses")
@@ -88,5 +92,10 @@ public class RecordController {
     @GetMapping(path="/all")
     ResponseEntity getAllRecords(@RequestAttribute int accountId) {
         return ResponseEntity.ok(getRecordService.getAllRecords(accountId));
+    }
+
+    @GetMapping(path = "/stat")
+    ResponseEntity getStat(@RequestAttribute int accountId) {
+        return ResponseEntity.ok(avgRecordService.getAvgStat(accountId));
     }
 }

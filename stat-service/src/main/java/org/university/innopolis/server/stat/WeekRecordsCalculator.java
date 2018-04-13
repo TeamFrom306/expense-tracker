@@ -2,8 +2,8 @@ package org.university.innopolis.server.stat;
 
 import java.util.Map;
 
-class DayRecordsCalculator extends RecordsCalculator {
-    private static final long TIME_QUANTIFICATION = 84600; // 3600 * 24
+public class WeekRecordsCalculator extends RecordsCalculator {
+    private static final long TIME_QUANTIFICATION = 592200; // 3600 * 24 * 7
 
     @Override
     protected long getQuantificationTime() {
@@ -12,6 +12,6 @@ class DayRecordsCalculator extends RecordsCalculator {
 
     @Override
     public void fillMap(int accountId, Map<String, Double> res) {
-        res.put("dayAvg", getAverage(accountId));
+        res.put("weekAvg", getAverage(accountId));
     }
 }

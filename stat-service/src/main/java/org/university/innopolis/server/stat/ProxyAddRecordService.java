@@ -9,8 +9,10 @@ import org.university.innopolis.server.services.exceptions.WrongAmountValueExcep
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
 
+import java.util.Map;
+
 @Service("proxyAddRecordService")
-public class ProxyAddRecordService implements AddRecordService {
+public class ProxyAddRecordService implements AddRecordService, AvgRecordService {
     private AddRecordService addRecordService;
     private StateManager stateManager;
 
@@ -34,5 +36,10 @@ public class ProxyAddRecordService implements AddRecordService {
         stateManager.appendRecord(accountId, record);
 
         return record;
+    }
+
+    @Override
+    public Map<String, Double> getAvgStat(int accountId) {
+        return stateManager.getStats(accountId);
     }
 }
