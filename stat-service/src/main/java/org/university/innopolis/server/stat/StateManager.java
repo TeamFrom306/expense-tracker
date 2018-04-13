@@ -1,6 +1,7 @@
 package org.university.innopolis.server.stat;
 
 import org.springframework.stereotype.Service;
+import org.university.innopolis.server.stat.calculators.*;
 import org.university.innopolis.server.views.RecordView;
 
 import java.util.*;
@@ -10,13 +11,16 @@ class StateManager {
     private List<RecordsCalculator> calculators = new ArrayList<>();
 
     StateManager() {
-        calculators.add(new DayRecordsCalculator());
-        calculators.add(new WeekRecordsCalculator());
+        calculators.add(new DayExpensesCalculator());
+        calculators.add(new DayIncomesCalculator());
+        calculators.add(new WeekExpensesCalculator());
+        calculators.add(new WeekIncomesCalculator());
     }
 
     public void appendRecord(int accountId, RecordView record) {
         for (RecordsCalculator calculator : calculators) {
-            calculator.registerRecord(accountId, record);
+            if (record.getType() == calculator.getType())
+                calculator.registerRecord(accountId, record);
         }
     }
 
