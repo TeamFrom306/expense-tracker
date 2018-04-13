@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     compile project(':services')
+    compile project(':stat-service')
 
     compile("org.springframework.boot:spring-boot-starter-web")
     testCompile group: 'junit', name: 'junit', version: '4.12'

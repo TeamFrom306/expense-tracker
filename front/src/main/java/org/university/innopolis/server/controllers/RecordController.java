@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
-import org.university.innopolis.server.services.AccountService;
 import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.GetRecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
@@ -21,15 +20,12 @@ public class RecordController {
 
     private GetRecordService getRecordService;
     private AddRecordService addRecordService;
-    private AccountService accountService;
 
     @Autowired
     public RecordController(GetRecordService getRecordService,
-                            AddRecordService addRecordService,
-                            AccountService accountService) {
+                            AddRecordService proxyAddRecordService) {
         this.getRecordService = getRecordService;
-        this.addRecordService = addRecordService;
-        this.accountService = accountService;
+        this.addRecordService = proxyAddRecordService;
     }
 
     @PostMapping(path="/expenses")
@@ -70,7 +66,7 @@ public class RecordController {
                     date,
                     Type.INCOME,
                     accountId);
-            
+
             return ResponseEntity.ok(res);
         } catch (WrongDateParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
