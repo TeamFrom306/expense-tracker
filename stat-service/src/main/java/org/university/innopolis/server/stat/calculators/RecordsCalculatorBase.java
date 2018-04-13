@@ -1,14 +1,15 @@
 package org.university.innopolis.server.stat.calculators;
 
-import org.university.innopolis.server.common.Type;
+import org.university.innopolis.server.stat.RecordsCalculator;
 import org.university.innopolis.server.views.RecordView;
 
 import java.util.*;
 
-public abstract class RecordsCalculator {
+public abstract class RecordsCalculatorBase implements RecordsCalculator {
     private Map<Integer, Double> total = new HashMap<>();
     private Map<Integer, List<RecordView>> queue = new HashMap<>();
 
+    @Override
     public void registerRecord(int accountId, RecordView record) {
         queue.computeIfAbsent(accountId, k -> new ArrayList<>());
         total.putIfAbsent(accountId, 0d);
@@ -56,7 +57,4 @@ public abstract class RecordsCalculator {
 
     protected abstract long getQuantificationTime();
 
-    public abstract void fillMap(int accountId, Map<String, Double> res);
-    
-    public abstract Type getType();
 }
