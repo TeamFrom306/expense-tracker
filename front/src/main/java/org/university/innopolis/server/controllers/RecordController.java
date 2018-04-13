@@ -9,7 +9,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.services.AccountService;
-import org.university.innopolis.server.services.RecordService;
+import org.university.innopolis.server.services.AddRecordService;
+import org.university.innopolis.server.services.GetRecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
@@ -18,12 +19,16 @@ import org.university.innopolis.server.views.RecordView;
 @RequestMapping(path="api/records/")
 public class RecordController {
 
-    private RecordService recordService;
+    private GetRecordService getRecordService;
+    private AddRecordService addRecordService;
     private AccountService accountService;
 
     @Autowired
-    public RecordController(RecordService recordService, AccountService accountService) {
-        this.recordService = recordService;
+    public RecordController(GetRecordService getRecordService,
+                            AddRecordService addRecordService,
+                            AccountService accountService) {
+        this.getRecordService = getRecordService;
+        this.addRecordService = addRecordService;
         this.accountService = accountService;
     }
 
@@ -34,13 +39,14 @@ public class RecordController {
                               @RequestParam long date,
                               @RequestAttribute int accountId) {
         try {
-            RecordView res = recordService.addRecord(
+            RecordView res = addRecordService.addRecord(
                     description,
                     amount,
                     currency,
                     date,
-                    Type.EXPENSE);
-            accountService.withdrawMoney(accountId, amount);
+                    Type.EXPENSE,
+                    accountId);
+
             return ResponseEntity.ok(res);
         } catch (WrongDateParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
@@ -57,13 +63,14 @@ public class RecordController {
                              @RequestParam long date,
                              @RequestAttribute int accountId) {
         try {
-            RecordView res = recordService.addRecord(
+            RecordView res = addRecordService.addRecord(
                     description,
                     amount,
                     currency,
                     date,
-                    Type.INCOME);
-            accountService.addMoney(accountId, amount);
+                    Type.INCOME,
+                    accountId);
+            
             return ResponseEntity.ok(res);
         } catch (WrongDateParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
@@ -73,17 +80,17 @@ public class RecordController {
     }
 
     @GetMapping(path="/expenses")
-    ResponseEntity getExpenses() {
-        return ResponseEntity.ok(recordService.getRecords(Type.EXPENSE));
+    ResponseEntity getExpenses(@RequestAttribute int accountId) {
+        return ResponseEntity.ok(getRecordService.getRecords(Type.EXPENSE, accountId));
     }
 
     @GetMapping(path="/incomes")
-    ResponseEntity getIncomes() {
-        return ResponseEntity.ok(recordService.getRecords(Type.INCOME));
+    ResponseEntity getIncomes(@RequestAttribute int accountId) {
+        return ResponseEntity.ok(getRecordService.getRecords(Type.INCOME, accountId));
     }
 
     @GetMapping(path="/all")
-    ResponseEntity getAllRecords() {
-        return ResponseEntity.ok(recordService.getAllRecords());
+    ResponseEntity getAllRecords(@RequestAttribute int accountId) {
+        return ResponseEntity.ok(getRecordService.getAllRecords(accountId));
     }
 }

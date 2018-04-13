@@ -95,4 +95,8 @@ public class Record {
     public void setType(Type type) {
         this.type = type;
     }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 }

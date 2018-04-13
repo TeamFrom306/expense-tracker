@@ -22,14 +22,4 @@ public class AccountService {
         else
             return new AccountView(account);
     }
-
-    public void withdrawMoney(int accountId, double amount) {
-        Account account = accountRepository.getById(accountId);
-        accountRepository.updateBalanceById(accountId, account.getBalance() - amount);
-    }
-
-    public void addMoney(int accountId, double amount) {
-        Account account = accountRepository.getById(accountId);
-        accountRepository.updateBalanceById(accountId, account.getBalance() + amount);
-    }
 }
