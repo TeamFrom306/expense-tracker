@@ -4,11 +4,6 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'jacoco'
 
-//bootJar {
-//    baseName = 'gs-rest-service'
-//    version =  '0.1.0'
-//}
-
 repositories {
     mavenCentral()
 }
@@ -17,7 +12,29 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-//    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+subprojects {
+    test.useTestNG()
+}
+
+task codeCoverageReport(type: JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
+
+    reports {
+        xml.enabled true
+        xml.destination "${buildDir}/reports/jacoco/report.xml"
+        html.enabled false
+        csv.enabled false
+    }
+}
+
+codeCoverageReport.dependsOn {
+    subprojects*.test
 }
 
 sourceSets {
