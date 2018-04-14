@@ -2,10 +2,16 @@ package org.university.innopolis.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.university.innopolis.server.filters.AuthFilter;
+import org.university.innopolis.server.model.Account;
+import org.university.innopolis.server.model.Category;
+import org.university.innopolis.server.model.Record;
 
 @SpringBootApplication
 public class Application {
