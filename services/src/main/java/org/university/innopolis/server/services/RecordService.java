@@ -35,11 +35,13 @@ public class RecordService implements AddRecordService, GetRecordService {
                                 Currency currency,
                                 long date,
                                 Type type,
-                                int accountId) throws WrongAmountValueException,
+                                int accountId) throws
+            WrongAmountValueException,
             WrongDateParameterException {
 
         checkAmount(amount);
-        Date properDate = convertDate(date * 1000L);
+        Date properDate = tryParseDate(date);
+
         Account account = accountRepository.getById(accountId);
 
         Record record = new Record(amount, currency, properDate, type);
@@ -98,10 +100,11 @@ public class RecordService implements AddRecordService, GetRecordService {
             throw new WrongAmountValueException(amount);
     }
 
-    private Date convertDate(long date) throws WrongDateParameterException {
-        if (date <= 0) {
-            throw new WrongDateParameterException(Long.toString(date));
-        }
-        return new Date(date);
+    private Date tryParseDate(long date) throws WrongDateParameterException {
+        long dateInMsec = date * 1000;
+        long currentDate = new Date().getTime();
+        if (date < 0 || currentDate - dateInMsec < -300_000)
+            throw new WrongDateParameterException(date);
+        return new Date(dateInMsec);
     }
 }
