@@ -33,7 +33,7 @@ public class RecordController {
     }
 
     @PostMapping(path="/expenses")
-    ResponseEntity addExpense(@RequestParam String description,
+    ResponseEntity addExpense(@RequestParam(required = false) String description,
                               @RequestParam double amount,
                               @RequestParam Currency currency,
                               @RequestParam long date,
@@ -57,7 +57,7 @@ public class RecordController {
     }
 
     @PostMapping(path="/incomes")
-    ResponseEntity addIncome(@RequestParam String description,
+    ResponseEntity addIncome(@RequestParam(required = false)  String description,
                              @RequestParam double amount,
                              @RequestParam Currency currency,
                              @RequestParam long date,
