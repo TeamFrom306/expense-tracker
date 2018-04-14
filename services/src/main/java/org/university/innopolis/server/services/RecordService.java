@@ -49,7 +49,9 @@ public class RecordService implements AddRecordService, GetRecordService {
             record.setDescription(description);
         }
 
-        account.setBalance(account.getBalance() - record.getAmount());
+        account.setBalance(record.getType() == Type.INCOME ?
+                account.getBalance() + record.getAmount() :
+                account.getBalance() - record.getAmount());
 
         accountRepository.save(account);
         record = recordRepository.save(record);
