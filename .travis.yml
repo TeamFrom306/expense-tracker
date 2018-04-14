@@ -1,0 +1,13 @@
+install: gradle wrapper --gradle-version 4.6
+language: java
+jdk: oraclejdk8
+script:
+  - ./gradlew check
+  - ./gradlew codeCoverageReport
+#  - ./gradlew jacocoTestReport
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+#test:
+#    post:
+#        - if [ -e ./gradlew ]; then ./gradlew jacocoTestReport;else gradle jacocoTestReport;fi
+#        - bash <(curl -s https://codecov.io/bash)
