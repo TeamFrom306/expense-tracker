@@ -1,16 +1,14 @@
 package org.university.innopolis.server.views;
 
-import org.university.innopolis.server.model.Account;
-
 public class AccountView {
     private final String login;
     private final String token;
     private final double balance;
 
-    public AccountView(Account account) {
-        login = account.getLogin();
-        token = account.getToken();
-        balance = account.getBalance();
+    public AccountView(String login, String token, double balance) {
+        this.login = login;
+        this.token = token;
+        this.balance = balance;
     }
 
     public String getLogin() {

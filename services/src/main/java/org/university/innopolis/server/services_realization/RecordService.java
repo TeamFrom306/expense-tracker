@@ -1,4 +1,4 @@
-package org.university.innopolis.server.services;
+package org.university.innopolis.server.services_realization;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,8 +8,11 @@ import org.university.innopolis.server.model.Account;
 import org.university.innopolis.server.persistence.AccountRepository;
 import org.university.innopolis.server.persistence.RecordRepository;
 import org.university.innopolis.server.model.Record;
+import org.university.innopolis.server.services.AddRecordService;
+import org.university.innopolis.server.services.GetRecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
+import org.university.innopolis.server.services_realization.mappers.RecordMapper;
 import org.university.innopolis.server.views.RecordView;
 
 import java.util.ArrayList;
@@ -58,7 +61,7 @@ public class RecordService implements AddRecordService, GetRecordService {
         accountRepository.save(account);
         record = recordRepository.save(record);
 
-        return new RecordView(record);
+        return RecordMapper.map(record);
 
 
     }
@@ -75,7 +78,7 @@ public class RecordService implements AddRecordService, GetRecordService {
         List<RecordView> recordViews = new ArrayList<>();
 
         for (Record r : records) {
-            recordViews.add(new RecordView(r));
+            recordViews.add(RecordMapper.map(r));
         }
 
         return recordViews;
@@ -89,7 +92,7 @@ public class RecordService implements AddRecordService, GetRecordService {
         List<RecordView> recordViews = new ArrayList<>();
 
         for (Record r : records) {
-            recordViews.add(new RecordView(r));
+            recordViews.add(RecordMapper.map(r));
         }
 
         return recordViews;

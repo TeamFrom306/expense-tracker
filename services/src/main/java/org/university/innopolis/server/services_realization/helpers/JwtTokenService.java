@@ -1,4 +1,4 @@
-package org.university.innopolis.server.services.helpers;
+package org.university.innopolis.server.services_realization.helpers;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;

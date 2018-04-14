@@ -1,4 +1,4 @@
-package org.university.innopolis.server.stat;
+package org.university.innopolis.server.services_realization;
 
 import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.views.RecordView;

@@ -1,14 +1,16 @@
-package org.university.innopolis.server.services;
+package org.university.innopolis.server.services_realization;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.university.innopolis.server.model.Account;
 import org.university.innopolis.server.persistence.AccountRepository;
+import org.university.innopolis.server.services.AuthenticationService;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
-import org.university.innopolis.server.services.helpers.CredentialValidator;
-import org.university.innopolis.server.services.helpers.EncoderService;
-import org.university.innopolis.server.services.helpers.TokenService;
+import org.university.innopolis.server.services_realization.helpers.CredentialValidator;
+import org.university.innopolis.server.services_realization.helpers.EncoderService;
+import org.university.innopolis.server.services_realization.helpers.TokenService;
+import org.university.innopolis.server.services_realization.mappers.AccountMapper;
 import org.university.innopolis.server.views.AccountView;
 
 import java.util.Objects;
@@ -58,7 +60,7 @@ public class AuthService implements AuthenticationService {
             throw new DuplicatedUserException(login);
 
         Account res = accountRepository.save(new Account(login, encodedPassword));
-        return new AccountView(res);
+        return AccountMapper.map(res);
     }
 
     @Override
@@ -72,7 +74,7 @@ public class AuthService implements AuthenticationService {
             throw new BadCredentialsException();
         if (account.getToken() == null)
             storeToken(account, login);
-        return new AccountView(account);
+        return AccountMapper.map(account);
     }
 
     @Override

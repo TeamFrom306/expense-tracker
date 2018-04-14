@@ -1,10 +1,16 @@
-package org.university.innopolis.server.stat;
+package org.university.innopolis.server.services_realization;
 
 import org.springframework.stereotype.Service;
-import org.university.innopolis.server.stat.calculators.*;
+import org.university.innopolis.server.services_realization.calculators.DayExpensesCalculator;
+import org.university.innopolis.server.services_realization.calculators.DayIncomesCalculator;
+import org.university.innopolis.server.services_realization.calculators.WeekExpensesCalculator;
+import org.university.innopolis.server.services_realization.calculators.WeekIncomesCalculator;
 import org.university.innopolis.server.views.RecordView;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 class StateManager {
