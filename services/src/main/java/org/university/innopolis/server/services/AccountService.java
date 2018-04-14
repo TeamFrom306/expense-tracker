@@ -22,4 +22,10 @@ public class AccountService {
         else
             return new AccountView(account);
     }
+
+    public AccountView adjustBalance(double newBalance, int accountId) {
+        Account account = accountRepository.getById(accountId);
+        account.setBalance(newBalance);
+        return new AccountView(accountRepository.save(account));
+    }
 }
