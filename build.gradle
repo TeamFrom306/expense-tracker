@@ -1,21 +1,16 @@
 group 'org.university.innopolis.org.university.innopolis.server'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'java'
-apply plugin: 'jacoco'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
 
-repositories {
-    mavenCentral()
-}
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-}
-
-subprojects {
-    test.useTestNG()
+    repositories {
+        mavenCentral()
+    }
 }
 
 task codeCoverageReport(type: JacocoReport) {
