@@ -12,7 +12,7 @@ import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.GetRecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
-import org.university.innopolis.server.stat.AvgRecordService;
+import org.university.innopolis.server.services.AvgRecordService;
 import org.university.innopolis.server.views.RecordView;
 
 @Controller

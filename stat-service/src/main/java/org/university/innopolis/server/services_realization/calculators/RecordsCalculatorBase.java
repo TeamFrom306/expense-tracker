@@ -1,6 +1,6 @@
-package org.university.innopolis.server.stat.calculators;
+package org.university.innopolis.server.services_realization.calculators;
 
-import org.university.innopolis.server.stat.RecordsCalculator;
+import org.university.innopolis.server.services_realization.RecordsCalculator;
 import org.university.innopolis.server.views.RecordView;
 
 import java.util.*;

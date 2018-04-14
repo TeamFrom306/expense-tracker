@@ -1,10 +1,11 @@
-package org.university.innopolis.server.stat;
+package org.university.innopolis.server.services_realization;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.services.AddRecordService;
+import org.university.innopolis.server.services.AvgRecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;

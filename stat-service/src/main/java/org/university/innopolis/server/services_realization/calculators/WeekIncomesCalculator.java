@@ -1,13 +1,13 @@
-package org.university.innopolis.server.stat.calculators;
+package org.university.innopolis.server.services_realization.calculators;
 
 import org.university.innopolis.server.common.Type;
 
 import java.util.Map;
 
-public class DayIncomesCalculator extends DayRecordsCalculator {
+public class WeekIncomesCalculator extends WeekRecordsCalculator {
     @Override
     public void fillMap(int accountId, Map<String, Double> res) {
-        res.put("dayAvgIncomes", getAverage(accountId));
+        res.put("weekAvgIncomes", getAverage(accountId));
     }
 
     @Override

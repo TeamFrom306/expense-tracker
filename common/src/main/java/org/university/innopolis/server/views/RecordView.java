@@ -2,7 +2,6 @@ package org.university.innopolis.server.views;
 
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
-import org.university.innopolis.server.model.Record;
 
 import java.util.Date;
 
@@ -13,12 +12,12 @@ public class RecordView {
     private final Date date;
     private final Type type;
 
-    public RecordView(Record record) {
-        description = record.getDescription();
-        amount = record.getAmount();
-        currency = record.getCurrency();
-        date = record.getDate();
-        type = record.getType();
+    public RecordView(String description, double amount, Currency currency, Date date, Type type) {
+        this.description = description;
+        this.amount = amount;
+        this.currency = currency;
+        this.date = date;
+        this.type = type;
     }
 
     public Type getType() {

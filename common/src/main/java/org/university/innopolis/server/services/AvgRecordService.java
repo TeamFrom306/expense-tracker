@@ -1,4 +1,4 @@
-package org.university.innopolis.server.stat;
+package org.university.innopolis.server.services;
 
 import java.util.Map;
 
