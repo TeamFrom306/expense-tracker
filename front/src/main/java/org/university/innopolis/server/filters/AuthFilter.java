@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import org.university.innopolis.server.services.AuthenticationService;
+import org.university.innopolis.server.services.TokenService;
 import org.university.innopolis.server.services.exceptions.CorruptedTokenException;
 import org.university.innopolis.server.services.exceptions.ExpiredTokenException;
-import org.university.innopolis.server.services_realization.helpers.TokenService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

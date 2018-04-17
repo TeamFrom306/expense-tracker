@@ -4,4 +4,6 @@ include 'persistence'
 include 'services'
 include 'front'
 include 'stat-service'
+include 'rmi'
+include 'rmi-service'
 

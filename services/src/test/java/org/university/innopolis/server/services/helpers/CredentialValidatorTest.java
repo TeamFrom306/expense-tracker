@@ -2,7 +2,7 @@ package org.university.innopolis.server.services.helpers;
 
 import org.junit.Test;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
-import org.university.innopolis.server.services_realization.helpers.CredentialValidator;
+import org.university.innopolis.server.services.realization.helpers.CredentialValidator;
 
 public class CredentialValidatorTest {
     @Test(expected = BadCredentialsException.class)
