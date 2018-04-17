@@ -17,8 +17,8 @@ public class AccountController {
     private AuthenticationService authService;
 
     @Autowired
-    public AccountController(AccountService accountServiceRmi, AuthenticationService authService) {
-        this.accountService = accountServiceRmi;
+    public AccountController(AccountService accountService, AuthenticationService authService) {
+        this.accountService = accountService;
         this.authService = authService;
     }
 

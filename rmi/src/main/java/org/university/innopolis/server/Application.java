@@ -2,7 +2,7 @@ package org.university.innopolis.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.university.innopolis.server.rmi.server.RmiServer;
+import org.university.innopolis.server.services.rmi.server.RmiServer;
 
 @SpringBootApplication
 public class Application {
