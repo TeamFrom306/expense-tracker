@@ -1,4 +1,4 @@
-package org.university.innopolis.server.services_realization.helpers;
+package org.university.innopolis.server.services;
 
 import org.university.innopolis.server.services.exceptions.CorruptedTokenException;
 import org.university.innopolis.server.services.exceptions.ExpiredTokenException;

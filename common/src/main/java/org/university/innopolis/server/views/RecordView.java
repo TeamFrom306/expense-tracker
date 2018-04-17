@@ -3,9 +3,10 @@ package org.university.innopolis.server.views;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class RecordView {
+public class RecordView implements Serializable {
     private final String description;
     private final double amount;
     private final Currency currency;

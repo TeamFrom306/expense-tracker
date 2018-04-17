@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 import org.university.innopolis.server.model.Account;
 import org.university.innopolis.server.persistence.AccountRepository;
 import org.university.innopolis.server.services.AuthenticationService;
+import org.university.innopolis.server.services.TokenService;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
 import org.university.innopolis.server.services_realization.helpers.CredentialValidator;
 import org.university.innopolis.server.services_realization.helpers.EncoderService;
-import org.university.innopolis.server.services_realization.helpers.TokenService;
 import org.university.innopolis.server.services_realization.mappers.AccountMapper;
 import org.university.innopolis.server.views.AccountView;
 

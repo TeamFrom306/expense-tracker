@@ -1,9 +1,10 @@
-package org.university.innopolis.server.services_realization.helpers;
+package org.university.innopolis.server.services_realization;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.university.innopolis.server.services.TokenService;
 import org.university.innopolis.server.services.exceptions.CorruptedTokenException;
 import org.university.innopolis.server.services.exceptions.ExpiredTokenException;
 

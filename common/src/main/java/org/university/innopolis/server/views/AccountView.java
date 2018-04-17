@@ -1,6 +1,8 @@
 package org.university.innopolis.server.views;
 
-public class AccountView {
+import java.io.Serializable;
+
+public class AccountView implements Serializable {
     private final String login;
     private final String token;
     private final double balance;
