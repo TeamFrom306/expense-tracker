@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.university.innopolis.server.services.rmi.server.RmiServer;
 
 @SpringBootApplication
-public class Application {
+public class ApplicationRmi {
     public static void main(String[] args) {
         SpringApplication.run(RmiServer.class, args);
     }
