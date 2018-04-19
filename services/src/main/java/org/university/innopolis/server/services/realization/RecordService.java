@@ -46,6 +46,8 @@ public class RecordService implements AddRecordService, GetRecordService {
         Date properDate = tryParseDate(date);
 
         Account account = accountRepository.getById(accountId);
+        if (account == null)
+            return null;
 
         Record record = new Record(amount, currency, properDate, type);
         record.setAccount(account);
@@ -62,8 +64,6 @@ public class RecordService implements AddRecordService, GetRecordService {
         record = recordRepository.save(record);
 
         return RecordMapper.map(record);
-
-
     }
 
     @Override

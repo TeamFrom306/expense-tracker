@@ -34,6 +34,8 @@ public class ProxyAddRecordService implements AddRecordService, AvgRecordService
             WrongAmountValueException,
             WrongDateParameterException {
         RecordView record = addRecordService.addRecord(description, amount, currency, date, type, accountId);
+        if (record == null)
+            return null;
         stateManager.appendRecord(accountId, record);
 
         return record;
