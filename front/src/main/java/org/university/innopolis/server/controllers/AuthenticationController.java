@@ -60,9 +60,9 @@ public class AuthenticationController {
 
     @PostMapping(path = "/logout")
     ResponseEntity logout(@RequestAttribute int accountId) {
-        String logString = "/logout, account: {}";
+        String logString = "/logout, account: {}, status: {}";
         authService.revokeTokenById(accountId);
-        logger.debug(logString, accountId);
+        logger.debug(logString, accountId, HttpStatus.OK);
         return ResponseEntity.ok().build();
     }
 }
