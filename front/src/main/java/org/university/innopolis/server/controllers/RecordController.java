@@ -16,6 +16,7 @@ import org.university.innopolis.server.services.AvgRecordService;
 import org.university.innopolis.server.views.RecordView;
 
 @Controller
+@CrossOrigin("*")
 @RequestMapping(path="api/records/")
 public class RecordController {
 
