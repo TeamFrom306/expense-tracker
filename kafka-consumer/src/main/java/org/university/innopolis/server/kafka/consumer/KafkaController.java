@@ -8,6 +8,7 @@ import org.university.innopolis.server.kafka.common.KafkaRecord;
 import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
+import org.university.innopolis.server.views.RecordView;
 
 @Component
 public class KafkaController {
@@ -22,13 +23,15 @@ public class KafkaController {
 
     public void addRecord(KafkaRecord record, int accountId) {
         try {
-            addRecordService.addRecord(
+            RecordView res = addRecordService.addRecord(
                     record.getDescription(),
                     record.getAmount(),
                     record.getCurrency(),
                     record.getDate().getTime() / 1000,
                     record.getType(),
                     accountId);
+            if (res != null)
+                logger.info(record.toString());
         } catch (WrongAmountValueException | WrongDateParameterException ignored) {
             logger.error(ignored.toString());
         }
