@@ -11,6 +11,7 @@ import org.university.innopolis.server.services.AuthenticationService;
 import org.university.innopolis.server.views.AccountView;
 
 @Controller
+@CrossOrigin("*")
 @RequestMapping(path = "/api")
 public class AccountController {
     private AccountService accountService;
