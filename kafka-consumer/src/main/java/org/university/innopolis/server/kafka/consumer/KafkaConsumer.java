@@ -37,7 +37,7 @@ public class KafkaConsumer implements CommandLineRunner {
     @KafkaListener(id = "kafkaListener", topics = "record")
     public void listen1(@Payload KafkaRecord record,
                         @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) Integer accountId) {
-        logger.info(record.toString());
+        logger.debug(String.format("Received for account: %d", accountId));
         recordController.addRecord(record, accountId);
 
         this.latch.countDown();
