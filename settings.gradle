@@ -6,4 +6,7 @@ include 'front'
 include 'stat-service'
 include 'rmi'
 include 'rmi-service'
+include 'kafka-producer'
+include 'kafka-consumer'
+include 'kafka-common'
 
