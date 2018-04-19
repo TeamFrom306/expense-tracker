@@ -25,6 +25,14 @@ public class KafkaRecord implements Serializable {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "KafkaRecord{" +
+                "amount=" + amount +
+                ", type=" + type +
+                '}';
+    }
+
     public Type getType() {
         return type;
     }

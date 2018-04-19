@@ -7,12 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.university.innopolis.server.common.Currency;
-import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.kafka.common.KafkaRecord;
-
-import java.util.Date;
-import java.util.Random;
 
 @SpringBootApplication
 public class KafkaProducer implements CommandLineRunner {
@@ -25,16 +20,13 @@ public class KafkaProducer implements CommandLineRunner {
     @Autowired
     private KafkaTemplate<Integer, KafkaRecord> template;
 
+    @Autowired
+    private RecordGenerator recordGenerator;
+
     @Override
     public void run(String... args) throws Exception {
         for (int i = 0; i < 1000; i++) {
-            KafkaRecord record = new KafkaRecord(
-                    "descr",
-                    new Random().nextDouble() * 1000,
-                    Currency.DOLLAR,
-                    new Date(),
-                    Type.EXPENSE);
-            template.send("record", 1, record);
+            template.send("record", 1, recordGenerator.generateRecord());
             template.flush();
             Thread.sleep(200);
         }
