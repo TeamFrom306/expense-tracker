@@ -68,8 +68,8 @@ public class RecordService implements AddRecordService, GetRecordService {
 
     @Override
     public List<RecordView> getRecords(Type type, int accountId) {
-        Account account = accountRepository.getById(accountId);
-        List<Record> records = account.getRecords();
+        List<Record> records = recordRepository.getRecordsByAccount_Id(accountId);
+
         records = records
                 .stream()
                 .filter(r -> r.getType() == type)
