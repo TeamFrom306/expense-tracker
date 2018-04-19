@@ -7,11 +7,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class RecordView implements Serializable {
-    private final String description;
-    private final double amount;
-    private final Currency currency;
-    private final Date date;
-    private final Type type;
+    private String description;
+    private double amount;
+    private Currency currency;
+    private Date date;
+    private Type type;
+
+    public RecordView(){}
 
     public RecordView(String description, double amount, Currency currency, Date date, Type type) {
         this.description = description;

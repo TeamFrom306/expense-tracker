@@ -47,4 +47,9 @@ public class RmiServices {
     TokenService getTokenService() {
         return (TokenService) getService(TokenService.class);
     }
+
+    @Bean
+    StateService getExporterService() {
+        return (StateService) getService(StateService.class);
+    }
 }

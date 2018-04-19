@@ -58,4 +58,10 @@ public class RmiServer implements Remote {
     RmiServiceExporter exporter6(TokenService tokenService) {
         return getExporter(tokenService, TokenService.class);
     }
+
+    @Bean(name = "StateExporter")
+    @Autowired
+    RmiServiceExporter exporter7(StateService stateService) {
+        return getExporter(stateService, StateService.class);
+    }
 }
