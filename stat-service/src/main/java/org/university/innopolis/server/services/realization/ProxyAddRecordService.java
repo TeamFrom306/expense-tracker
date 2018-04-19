@@ -15,13 +15,13 @@ import java.util.Map;
 @Service("proxyAddRecordService")
 public class ProxyAddRecordService implements AddRecordService, AvgRecordService {
     private AddRecordService addRecordService;
-    private StateManager stateManager;
+    private CalculatorManager calculatorManager;
 
     @Autowired
     public ProxyAddRecordService(AddRecordService addRecordService,
-                                 StateManager stateManager) {
+                                 CalculatorManager calculatorManager) {
         this.addRecordService = addRecordService;
-        this.stateManager = stateManager;
+        this.calculatorManager = calculatorManager;
     }
 
     @Override
@@ -36,13 +36,13 @@ public class ProxyAddRecordService implements AddRecordService, AvgRecordService
         RecordView record = addRecordService.addRecord(description, amount, currency, date, type, accountId);
         if (record == null)
             return null;
-        stateManager.appendRecord(accountId, record);
+        calculatorManager.appendRecord(accountId, record);
 
         return record;
     }
 
     @Override
     public Map<String, Double> getAvgStat(int accountId) {
-        return stateManager.getStats(accountId);
+        return calculatorManager.getStats(accountId);
     }
 }

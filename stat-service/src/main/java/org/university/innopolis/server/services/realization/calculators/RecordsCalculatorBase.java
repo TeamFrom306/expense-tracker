@@ -1,11 +1,17 @@
 package org.university.innopolis.server.services.realization.calculators;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.university.innopolis.server.services.realization.RecordsCalculator;
 import org.university.innopolis.server.views.RecordView;
 
+import java.io.IOException;
 import java.util.*;
 
 public abstract class RecordsCalculatorBase implements RecordsCalculator {
+    private static Logger logger = LoggerFactory.getLogger(RecordsCalculatorBase.class);
     private Map<Integer, Double> total = new HashMap<>();
     private Map<Integer, List<RecordView>> queue = new HashMap<>();
 
@@ -21,6 +27,30 @@ public abstract class RecordsCalculatorBase implements RecordsCalculator {
         List<RecordView> recordList = queue.get(accountId);
         recordList.add(record);
         total.compute(accountId, (k, v) -> v + record.getAmount());
+    }
+
+    @Override
+    public String exportToJson() {
+        ObjectMapper mapper = new ObjectMapper();
+        CalculatorState state = new CalculatorState(total, queue);
+        try {
+            return mapper.writeValueAsString(state);
+        } catch (JsonProcessingException e) {
+            logger.error(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public void importFromJson(String json) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            CalculatorState state = mapper.readValue(json, CalculatorState.class);
+            this.queue = state.getQueue();
+            this.total = state.getTotal();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     double getAverage(int accountId) {
