@@ -9,4 +9,5 @@ include 'rmi-service'
 include 'kafka-producer'
 include 'kafka-consumer'
 include 'kafka-common'
+include 'serializer'
 
