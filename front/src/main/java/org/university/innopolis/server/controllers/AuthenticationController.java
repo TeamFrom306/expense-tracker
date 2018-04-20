@@ -10,6 +10,9 @@ import org.university.innopolis.server.services.AuthenticationService;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
 import org.university.innopolis.server.views.AccountView;
+import org.university.innopolis.server.wrappers.CredentialsWrapper;
+
+import javax.validation.Valid;
 
 @Controller
 @CrossOrigin("*")
@@ -23,10 +26,9 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/login")
-    ResponseEntity login(@RequestParam String login,
-                         @RequestParam String password) {
+    ResponseEntity login(@Valid @RequestBody CredentialsWrapper wrapper) {
         try {
-            AccountView account = authService.getAuthentication(login, password);
+            AccountView account = authService.getAuthentication(wrapper.getLogin(), wrapper.getPassword());
             return ResponseEntity.ok(account);
         } catch (BadCredentialsException ignored) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
@@ -34,10 +36,9 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/register")
-    ResponseEntity createAccount(@RequestParam String login,
-                                 @RequestParam String password) {
+    ResponseEntity createAccount(@Valid @RequestBody CredentialsWrapper wrapper) {
         try {
-            return ResponseEntity.ok(authService.registerAccount(login, password));
+            return ResponseEntity.ok(authService.registerAccount(wrapper.getLogin(), wrapper.getPassword()));
         } catch (DuplicatedUserException ignored) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This login is already taken");
         } catch (BadCredentialsException e) {
