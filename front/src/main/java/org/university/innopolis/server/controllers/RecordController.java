@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.AvgRecordService;
@@ -16,6 +15,11 @@ import org.university.innopolis.server.services.GetRecordService;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
+import org.university.innopolis.server.wrappers.ExpenseWrapper;
+import org.university.innopolis.server.wrappers.IncomeWrapper;
+import org.university.innopolis.server.wrappers.RecordWrapper;
+
+import javax.validation.Valid;
 
 import java.util.Date;
 import java.util.List;
@@ -39,71 +43,50 @@ public class RecordController {
         this.avgRecordService = avgRecordService;
     }
 
-    @PostMapping(path="/expenses")
-    ResponseEntity addExpense(@RequestParam(required = false) String description,
-                              @RequestParam double amount,
-                              @RequestParam Currency currency,
-                              @RequestParam long date,
+    @PostMapping(path = "/expenses")
+    ResponseEntity addExpense(@Valid @RequestBody ExpenseWrapper wrapper,
                               @RequestAttribute int accountId) {
+        return ResponseEntity.ok(addRecord(wrapper, accountId));
+    }
+
+    private RecordView addRecord(RecordWrapper wrapper, int accountId) {
         String logString = "/expenses, account: {}, amount: {}, date: {}, status: {}";
         try {
             RecordView res = addRecordService.addRecord(
-                    description,
-                    amount,
-                    currency,
-                    date,
-                    Type.EXPENSE,
+                    wrapper.getDescription(),
+                    wrapper.getAmount(),
+                    wrapper.getCurrency(),
+                    wrapper.getDate(),
+                    wrapper.getType(),
                     accountId);
-            logger.debug(logString, accountId, amount, new Date(date), HttpStatus.OK);
-            return ResponseEntity.ok(res);
+            logger.debug(logString, accountId, wrapper.getAmount(), new Date(wrapper.getDate()), HttpStatus.OK);
+            return res;
         } catch (WrongDateParameterException e) {
-            logger.debug(logString, accountId, amount, new Date(date), HttpStatus.BAD_REQUEST);
+            logger.debug(logString, accountId, wrapper.getAmount(), new Date(wrapper.getDate()), HttpStatus.BAD_REQUEST);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
         } catch (WrongAmountValueException e) {
-            logger.debug(logString, accountId, amount, new Date(date), HttpStatus.BAD_REQUEST);
+            logger.debug(logString, accountId, wrapper.getAmount(), new Date(wrapper.getDate()), HttpStatus.BAD_REQUEST);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
         }
-
     }
 
-    @PostMapping(path="/incomes")
-    ResponseEntity addIncome(@RequestParam(required = false)  String description,
-                             @RequestParam double amount,
-                             @RequestParam Currency currency,
-                             @RequestParam long date,
+    @PostMapping(path = "/incomes")
+    ResponseEntity addIncome(@Valid @RequestBody IncomeWrapper wrapper,
                              @RequestAttribute int accountId) {
-        String logString = "/incomes, account: {}, amount: {}, date: {}, status: {}";
-
-        try {
-            RecordView res = addRecordService.addRecord(
-                    description,
-                    amount,
-                    currency,
-                    date,
-                    Type.INCOME,
-                    accountId);
-            logger.debug(logString, accountId, amount, new Date(date), HttpStatus.OK);
-            return ResponseEntity.ok(res);
-        } catch (WrongDateParameterException e) {
-            logger.debug(logString, accountId, amount, new Date(date), HttpStatus.BAD_REQUEST);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
-        } catch (WrongAmountValueException e) {
-            logger.debug(logString, accountId, amount, new Date(date), HttpStatus.BAD_REQUEST);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
-        }
+        return ResponseEntity.ok(addRecord(wrapper, accountId));
     }
 
-    @GetMapping(path="/expenses")
+    @GetMapping(path = "/expenses")
     ResponseEntity getExpenses(@RequestAttribute int accountId) {
         List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, accountId);
         logger.debug("/expenses, account: {}, status: {}", accountId, HttpStatus.OK);
         return ResponseEntity.ok(records);
     }
 
-    @GetMapping(path="/incomes")
+    @GetMapping(path = "/incomes")
     ResponseEntity getIncomes(@RequestAttribute int accountId) {
-        List<RecordView> records = getRecordService.getRecords(Type.INCOME, accountId);
-        logger.debug("/incomes, account: {}, status: {}", accountId, HttpStatus.OK);
+        List<RecordView> records =getRecordService.getRecords(Type.INCOME, accountId);
+    logger.debug("/incomes, account: {}, status: {}", accountId, HttpStatus.OK) ;
         return ResponseEntity.ok(records);
     }
 

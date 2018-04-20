@@ -12,6 +12,9 @@ import org.university.innopolis.server.services.AuthenticationService;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
 import org.university.innopolis.server.views.AccountView;
+import org.university.innopolis.server.wrappers.CredentialsWrapper;
+
+import javax.validation.Valid;
 
 @Controller
 @CrossOrigin("*")
@@ -26,32 +29,30 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/login")
-    ResponseEntity login(@RequestParam String login,
-                         @RequestParam String password) {
+    ResponseEntity login(@Valid @RequestBody CredentialsWrapper wrapper) {
         String logString = "/login, login: {}, password: {}, status: {}";
         try {
-            AccountView account = authService.getAuthentication(login, password);
-            logger.debug(logString, login, password, HttpStatus.OK);
+            AccountView account = authService.getAuthentication(wrapper.getLogin(), wrapper.getPassword());
+            logger.debug(logString, wrapper.getLogin(), wrapper.getPassword(), HttpStatus.OK);
             return ResponseEntity.ok(account);
         } catch (BadCredentialsException ignored) {
-            logger.debug(logString, login, password, HttpStatus.UNAUTHORIZED);
+            logger.debug(logString, wrapper.getLogin(), wrapper.getPassword(), HttpStatus.UNAUTHORIZED);
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
     }
 
     @PostMapping(path = "/register")
-    ResponseEntity createAccount(@RequestParam String login,
-                                 @RequestParam String password) {
+    ResponseEntity createAccount(@Valid @RequestBody CredentialsWrapper wrapper) {
         String logString = "/register, login: {}, password: {}, status: {}";
         try {
-            AccountView account = authService.registerAccount(login, password);
-            logger.debug(logString, login, password, HttpStatus.OK);
+            AccountView account = authService.registerAccount(wrapper.getLogin(), wrapper.getPassword());
+            logger.debug(logString, wrapper.getLogin(), wrapper.getPassword(), HttpStatus.OK);
             return ResponseEntity.ok(account);
         } catch (DuplicatedUserException ignored) {
-            logger.debug(logString, login, password, HttpStatus.CONFLICT);
+            logger.debug(logString, wrapper.getLogin(), wrapper.getPassword(), HttpStatus.CONFLICT);
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This login is already taken");
         } catch (BadCredentialsException e) {
-            logger.debug(logString, login, password, HttpStatus.BAD_REQUEST);
+            logger.debug(logString, wrapper.getLogin(), wrapper.getPassword(), HttpStatus.BAD_REQUEST);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid login or password");
         }
     }
