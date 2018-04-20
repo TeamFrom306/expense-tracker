@@ -1,5 +1,7 @@
 package org.university.innopolis.server.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ public class AccountController {
     private AccountService accountService;
     private AuthenticationService authService;
 
+    private static Logger logger = LoggerFactory.getLogger(AccountController.class);
+
     @Autowired
     public AccountController(AccountService accountService, AuthenticationService authService) {
         this.accountService = accountService;
@@ -29,17 +33,25 @@ public class AccountController {
     @PostMapping(path = "/balance")
     ResponseEntity adjustBalance(@Valid @RequestBody BalanceWrapper wrapper,
                                  @RequestAttribute int accountId) {
+        logger.debug("/balance, account: {}", accountId);
         return ResponseEntity.ok(accountService.adjustBalance(wrapper.getBalance(), accountId));
     }
 
     @GetMapping(path = "/user")
     ResponseEntity getAccount(@RequestParam String login,
                               @RequestAttribute int accountId) {
-        if (!authService.isAuthorized(accountId, login))
+        String logString = "/user, account: {}, login: {}, status: {}";
+
+        if (!authService.isAuthorized(accountId, login)) {
+            logger.debug(logString, accountId, login, HttpStatus.FORBIDDEN);
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
         AccountView res = accountService.findAccount(login);
-        if (res == null)
+        if (res == null) {
+            logger.debug(logString, accountId, login, HttpStatus.NOT_FOUND);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with this login is not found");
+        }
+        logger.debug(logString, accountId, login, HttpStatus.OK);
         return ResponseEntity.ok(res);
     }
 }

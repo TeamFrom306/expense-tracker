@@ -22,9 +22,12 @@ repositories {
 }
 
 dependencies {
-    compile project(':services')
-    compile project(':stat-service')
+//    compile project(':services')
+//    compile project(':stat-service')
+//    compile project(':serializer')
+
+    compile project(':rmi-service')
 
     compile("org.springframework.boot:spring-boot-starter-web")
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+//    testCompile group: 'junit', name: 'junit', version: '4.12'
 }

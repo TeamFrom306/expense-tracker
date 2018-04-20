@@ -10,4 +10,6 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
     Record getById(int id);
 
     List<Record> getByType(Type type);
+
+    List<Record> getRecordsByAccount_Id(int account_id);
 }
