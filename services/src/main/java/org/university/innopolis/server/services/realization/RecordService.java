@@ -1,6 +1,8 @@
 package org.university.innopolis.server.services.realization;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
@@ -88,6 +90,19 @@ public class RecordService implements AddRecordService, GetRecordService {
     public List<RecordView> getAllRecords(int accountId) {
         List<Record> records = recordRepository.getRecordsByAccount_Id(accountId);
 
+        List<RecordView> recordViews = new ArrayList<>();
+
+        for (Record r : records) {
+            recordViews.add(RecordMapper.map(r));
+        }
+
+        return recordViews;
+    }
+
+    @Override
+    public List<RecordView> getAllRecords(int accountId, int count, int page) {
+        Pageable pageable = PageRequest.of(page, count);
+        List<Record> records = recordRepository.getRecordsByAccount_IdOrderByDateDesc(accountId, pageable);
         List<RecordView> recordViews = new ArrayList<>();
 
         for (Record r : records) {

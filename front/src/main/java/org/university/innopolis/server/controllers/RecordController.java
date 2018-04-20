@@ -26,7 +26,7 @@ import java.util.Map;
 
 @Controller
 @CrossOrigin("*")
-@RequestMapping(path="api/records/")
+@RequestMapping(path = "api/records/")
 public class RecordController {
     private static Logger logger = LoggerFactory.getLogger(RecordController.class);
     private GetRecordService getRecordService;
@@ -64,13 +64,29 @@ public class RecordController {
                     wrapper.getDate(),
                     wrapper.getType(),
                     accountId);
-            logger.debug(logString, accountId, wrapper.getAmount(), new Date(wrapper.getDate()), HttpStatus.OK);
+
+            logger.debug(logString,
+                    accountId,
+                    wrapper.getAmount(),
+                    new Date(wrapper.getDate()),
+                    HttpStatus.OK);
+
             return res;
         } catch (WrongDateParameterException e) {
-            logger.debug(logString, accountId, wrapper.getAmount(), new Date(wrapper.getDate()), HttpStatus.BAD_REQUEST);
+            logger.debug(logString,
+                    accountId,
+                    wrapper.getAmount(),
+                    new Date(wrapper.getDate()),
+                    HttpStatus.BAD_REQUEST);
+
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
         } catch (WrongAmountValueException e) {
-            logger.debug(logString, accountId, wrapper.getAmount(), new Date(wrapper.getDate()), HttpStatus.BAD_REQUEST);
+            logger.debug(logString,
+                    accountId,
+                    wrapper.getAmount(),
+                    new Date(wrapper.getDate()),
+                    HttpStatus.BAD_REQUEST);
+
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
         }
     }
@@ -84,14 +100,21 @@ public class RecordController {
 
     @GetMapping(path = "/incomes")
     ResponseEntity getIncomes(@RequestAttribute int accountId) {
-        List<RecordView> records =getRecordService.getRecords(Type.INCOME, accountId);
-    logger.debug("/incomes, account: {}, status: {}", accountId, HttpStatus.OK) ;
+        List<RecordView> records = getRecordService.getRecords(Type.INCOME, accountId);
+        logger.debug("/incomes, account: {}, status: {}", accountId, HttpStatus.OK);
         return ResponseEntity.ok(records);
     }
 
     @GetMapping(path = "/all")
-    ResponseEntity getAllRecords(@RequestAttribute int accountId) {
-        return ResponseEntity.ok(getRecordService.getAllRecords(accountId));
+    ResponseEntity getAllRecords(@RequestParam(defaultValue = "20", required = false) int count,
+                                 @RequestParam(defaultValue = "0", required = false) int page,
+                                 @RequestAttribute int accountId) {
+        logger.debug("/all, account: {}, count: {}, page: {}, status: {}",
+                accountId,
+                count,
+                page,
+                HttpStatus.OK);
+        return ResponseEntity.ok(getRecordService.getAllRecords(accountId, count, page));
     }
 
     @GetMapping(path = "/stat")
