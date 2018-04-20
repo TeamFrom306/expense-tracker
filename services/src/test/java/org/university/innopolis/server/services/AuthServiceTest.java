@@ -11,7 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.university.innopolis.server.ServiceConf;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
-import org.university.innopolis.server.services.helpers.ShaHashEncoder;
+import org.university.innopolis.server.services.realization.AuthService;
+import org.university.innopolis.server.services.realization.helpers.ShaHashEncoder;
 import org.university.innopolis.server.views.AccountView;
 
 import javax.persistence.EntityManager;
