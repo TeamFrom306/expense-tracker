@@ -9,6 +9,9 @@ import org.springframework.web.server.ResponseStatusException;
 import org.university.innopolis.server.services.AccountService;
 import org.university.innopolis.server.services.AuthenticationService;
 import org.university.innopolis.server.views.AccountView;
+import org.university.innopolis.server.wrappers.BalanceWrapper;
+
+import javax.validation.Valid;
 
 @Controller
 @CrossOrigin("*")
@@ -24,9 +27,9 @@ public class AccountController {
     }
 
     @PostMapping(path = "/balance")
-    ResponseEntity adjustBalance(@RequestParam double balance,
+    ResponseEntity adjustBalance(@Valid @RequestBody BalanceWrapper wrapper,
                                  @RequestAttribute int accountId) {
-        return ResponseEntity.ok(accountService.adjustBalance(balance, accountId));
+        return ResponseEntity.ok(accountService.adjustBalance(wrapper.getBalance(), accountId));
     }
 
     @GetMapping(path = "/user")
