@@ -1,2 +1,7 @@
 ignore:          # files and folders that will be removed during processing
   - "persistence/src/main/java/org/university/innopolis/server/persistence/*"
+  - "kafka-producer/*"
+  - "kafka-consumer/*"
+  - "kafka-common/*"
+  - "kafka-common/*"
+  - "front/*"
