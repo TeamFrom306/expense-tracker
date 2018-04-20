@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.GetRecordService;
@@ -14,10 +13,15 @@ import org.university.innopolis.server.services.exceptions.WrongAmountValueExcep
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.stat.AvgRecordService;
 import org.university.innopolis.server.views.RecordView;
+import org.university.innopolis.server.wrappers.ExpenseWrapper;
+import org.university.innopolis.server.wrappers.IncomeWrapper;
+import org.university.innopolis.server.wrappers.RecordWrapper;
+
+import javax.validation.Valid;
 
 @Controller
 @CrossOrigin("*")
-@RequestMapping(path="api/records/")
+@RequestMapping(path = "api/records/")
 public class RecordController {
 
     private GetRecordService getRecordService;
@@ -33,64 +37,45 @@ public class RecordController {
         this.avgRecordService = avgRecordService;
     }
 
-    @PostMapping(path="/expenses")
-    ResponseEntity addExpense(@RequestParam(required = false) String description,
-                              @RequestParam double amount,
-                              @RequestParam Currency currency,
-                              @RequestParam long date,
+    @PostMapping(path = "/expenses")
+    ResponseEntity addExpense(@Valid @RequestBody ExpenseWrapper wrapper,
                               @RequestAttribute int accountId) {
-        try {
-            RecordView res = addRecordService.addRecord(
-                    description,
-                    amount,
-                    currency,
-                    date,
-                    Type.EXPENSE,
-                    accountId);
+        return ResponseEntity.ok(addRecord(wrapper, accountId));
+    }
 
-            return ResponseEntity.ok(res);
+    private RecordView addRecord(RecordWrapper wrapper, int accountId) {
+        try {
+            return addRecordService.addRecord(
+                    wrapper.getDescription(),
+                    wrapper.getAmount(),
+                    wrapper.getCurrency(),
+                    wrapper.getDate(),
+                    wrapper.getType(),
+                    accountId);
         } catch (WrongDateParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
         } catch (WrongAmountValueException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
         }
-
     }
 
-    @PostMapping(path="/incomes")
-    ResponseEntity addIncome(@RequestParam(required = false)  String description,
-                             @RequestParam double amount,
-                             @RequestParam Currency currency,
-                             @RequestParam long date,
+    @PostMapping(path = "/incomes")
+    ResponseEntity addIncome(@Valid @RequestBody IncomeWrapper wrapper,
                              @RequestAttribute int accountId) {
-        try {
-            RecordView res = addRecordService.addRecord(
-                    description,
-                    amount,
-                    currency,
-                    date,
-                    Type.INCOME,
-                    accountId);
-
-            return ResponseEntity.ok(res);
-        } catch (WrongDateParameterException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
-        } catch (WrongAmountValueException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
-        }
+        return ResponseEntity.ok(addRecord(wrapper, accountId));
     }
 
-    @GetMapping(path="/expenses")
+    @GetMapping(path = "/expenses")
     ResponseEntity getExpenses(@RequestAttribute int accountId) {
         return ResponseEntity.ok(getRecordService.getRecords(Type.EXPENSE, accountId));
     }
 
-    @GetMapping(path="/incomes")
+    @GetMapping(path = "/incomes")
     ResponseEntity getIncomes(@RequestAttribute int accountId) {
         return ResponseEntity.ok(getRecordService.getRecords(Type.INCOME, accountId));
     }
 
-    @GetMapping(path="/all")
+    @GetMapping(path = "/all")
     ResponseEntity getAllRecords(@RequestAttribute int accountId) {
         return ResponseEntity.ok(getRecordService.getAllRecords(accountId));
     }
