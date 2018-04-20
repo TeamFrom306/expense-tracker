@@ -1,0 +1,17 @@
+package org.university.innopolis.server.services.realization.calculators;
+
+import org.university.innopolis.server.common.Type;
+
+import java.util.Map;
+
+public class DayIncomesCalculator extends DayRecordsCalculator {
+    @Override
+    public void fillMap(int accountId, Map<String, Double> res) {
+        res.put("dayAvgIncomes", getAverage(accountId));
+    }
+
+    @Override
+    public Type getType() {
+        return Type.INCOME;
+    }
+}
