@@ -1,0 +1,8 @@
+ignore:          # files and folders that will be removed during processing
+  - "persistence/*"
+  - "kafka-producer/*"
+  - "kafka-consumer/*"
+  - "kafka-common/*"
+  - "kafka-common/*"
+  - "front/*"
+  - "common/src/main/java/org/university/innopolis/server/views/*"
