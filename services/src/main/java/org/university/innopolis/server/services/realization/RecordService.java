@@ -86,8 +86,7 @@ public class RecordService implements AddRecordService, GetRecordService {
 
     @Override
     public List<RecordView> getAllRecords(int accountId) {
-        Account account = accountRepository.getById(accountId);
-        List<Record> records = account.getRecords();
+        List<Record> records = recordRepository.getRecordsByAccount_Id(accountId);
 
         List<RecordView> recordViews = new ArrayList<>();
 
