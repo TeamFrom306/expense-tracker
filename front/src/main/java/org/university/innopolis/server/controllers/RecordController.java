@@ -20,7 +20,6 @@ import org.university.innopolis.server.wrappers.IncomeWrapper;
 import org.university.innopolis.server.wrappers.RecordWrapper;
 
 import javax.validation.Valid;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +48,12 @@ public class RecordController {
         return ResponseEntity.ok(addRecord(wrapper, accountId));
     }
 
+    @PostMapping(path = "/incomes")
+    ResponseEntity addIncome(@Valid @RequestBody IncomeWrapper wrapper,
+                             @RequestAttribute int accountId) {
+        return ResponseEntity.ok(addRecord(wrapper, accountId));
+    }
+
     private RecordView addRecord(RecordWrapper wrapper, int accountId) {
         String logString = "/expenses, account: {}, amount: {}, date: {}, status: {}";
         try {
@@ -70,12 +75,6 @@ public class RecordController {
         }
     }
 
-    @PostMapping(path = "/incomes")
-    ResponseEntity addIncome(@Valid @RequestBody IncomeWrapper wrapper,
-                             @RequestAttribute int accountId) {
-        return ResponseEntity.ok(addRecord(wrapper, accountId));
-    }
-
     @GetMapping(path = "/expenses")
     ResponseEntity getExpenses(@RequestAttribute int accountId) {
         List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, accountId);
@@ -88,6 +87,11 @@ public class RecordController {
         List<RecordView> records =getRecordService.getRecords(Type.INCOME, accountId);
     logger.debug("/incomes, account: {}, status: {}", accountId, HttpStatus.OK) ;
         return ResponseEntity.ok(records);
+    }
+
+    @GetMapping(path = "/all")
+    ResponseEntity getAllRecords(@RequestAttribute int accountId) {
+        return ResponseEntity.ok(getRecordService.getAllRecords(accountId));
     }
 
     @GetMapping(path = "/stat")
