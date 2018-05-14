@@ -4,3 +4,5 @@ ignore:          # files and folders that will be removed during processing
   - "src/main/java/org/university/innopolis/server/persistence/*"
   - "src/main/java/org/university/innopolis/server/wrappers/*"
   - "src/main/java/org/university/innopolis/server/controllers/*"
+  - "src/main/java/org/university/innopolis/server/model/*"
+  - "src/main/java/org/university/innopolis/server/Application.java"
