@@ -33,17 +33,17 @@ class CalculatorManager {
         }
     }
 
-    public void appendRecord(int holderId, RecordView record) {
+    public void appendRecord(int accountId, RecordView record) {
         for (RecordsCalculator calculator : calculators) {
             if (record.getType() == calculator.getType())
-                calculator.registerRecord(holderId, record);
+                calculator.registerRecord(accountId, record);
         }
     }
 
-    public Map<String, Double> getStats(int holderId) {
+    public Map<String, Double> getStats(int accountId) {
         HashMap<String, Double> res = new HashMap<>();
         for (RecordsCalculator calculator : calculators) {
-            calculator.fillMap(holderId, res);
+            calculator.fillMap(accountId, res);
         }
         return res;
     }

@@ -24,13 +24,13 @@ public class AuthFilter extends GenericFilterBean {
     private static Logger logger = LoggerFactory.getLogger(AuthFilter.class);
 
     private final TokenService tokenService;
-    private AuthenticationService holderService;
+    private AuthenticationService authService;
 
     @Autowired
     public AuthFilter(TokenService tokenService,
-                      AuthenticationService holderService) {
+                      AuthenticationService authService) {
         this.tokenService = tokenService;
-        this.holderService = holderService;
+        this.authService = authService;
     }
 
     private void sendError(HttpServletResponse response, String message) throws IOException {
@@ -70,11 +70,11 @@ public class AuthFilter extends GenericFilterBean {
         } else {
             final String token = authHeader.substring(7);
             if (!isValid(response, token)) {
-                holderService.revokeToken(token);
+                authService.revokeToken(token);
                 return;
             }
 
-            int holderId = holderService.getHolderId(token);
+            int holderId = authService.getHolderId(token);
             if (holderId == -1) {
                 sendError(response, "Invalid token");
                 logger.debug("{}, msg: {}", ((HttpServletRequest) req).getRequestURI(), "Invalid token");

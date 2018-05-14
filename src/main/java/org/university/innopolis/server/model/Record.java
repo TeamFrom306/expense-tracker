@@ -19,13 +19,14 @@ public class Record {
     private Date date;
     private Type type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Holder holder;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
     protected Record() {
+        // For JPA
     }
 
     public Record(double amount, Currency currency, Date date, Type type) {
@@ -79,10 +80,6 @@ public class Record {
         return id;
     }
 
-    public Holder getHolder() {
-        return holder;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -95,7 +92,11 @@ public class Record {
         this.type = type;
     }
 
-    public void setHolder(Holder holder) {
-        this.holder = holder;
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

@@ -25,11 +25,4 @@ public class HolderServiceImplementation implements HolderService {
         else
             return HolderMapper.map(holder);
     }
-
-    @Override
-    public HolderView adjustBalance(double newBalance, int holderId) {
-        Holder holder = holderRepository.getById(holderId);
-        holder.setBalance(newBalance);
-        return HolderMapper.map(holderRepository.save(holder));
-    }
 }

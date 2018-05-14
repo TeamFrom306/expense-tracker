@@ -15,14 +15,13 @@ public class Holder {
 
     private String login;
     private String password;
-    private double balance;
-
-    @OneToMany(mappedBy = "holder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Record> records = new ArrayList<>();
+    private String token;
 
     @OneToMany(mappedBy = "holder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Category> categories = new ArrayList<>();
-    private String token;
+
+    @OneToMany(mappedBy = "holder", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Account> accounts = new ArrayList<>();
 
     protected Holder() {
         // Empty for JPA
@@ -31,15 +30,10 @@ public class Holder {
     public Holder(String login, String password){
         this.login = login;
         this.password = password;
-        this.balance = 0.0;
     }
 
     public int getId() {
         return id;
-    }
-
-    public List<Record> getRecords() {
-        return records;
     }
 
     public List<Category> getCategories() {
@@ -66,11 +60,7 @@ public class Holder {
         return token;
     }
 
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public List<Account> getAccounts() {
+        return accounts;
     }
 }

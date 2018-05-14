@@ -6,6 +6,7 @@ import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.AvgRecordService;
+import org.university.innopolis.server.services.exceptions.WrongAccountIdException;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
@@ -30,13 +31,15 @@ public class ProxyAddRecordService implements AddRecordService, AvgRecordService
                                 Currency currency,
                                 long date,
                                 Type type,
+                                int accountId,
                                 int holderId) throws
             WrongAmountValueException,
-            WrongDateParameterException {
-        RecordView record = addRecordService.addRecord(description, amount, currency, date, type, holderId);
+            WrongDateParameterException,
+            WrongAccountIdException {
+        RecordView record = addRecordService.addRecord(description, amount, currency, date, type, accountId, holderId);
         if (record == null)
             return null;
-        calculatorManager.appendRecord(holderId, record);
+        calculatorManager.appendRecord(accountId, record);
 
         return record;
     }

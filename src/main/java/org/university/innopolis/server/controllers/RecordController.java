@@ -12,6 +12,7 @@ import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.AvgRecordService;
 import org.university.innopolis.server.services.GetRecordService;
+import org.university.innopolis.server.services.exceptions.WrongAccountIdException;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
@@ -55,7 +56,7 @@ public class RecordController {
     }
 
     private RecordView addRecord(RecordWrapper wrapper, int holderId) {
-        String logString = "/expenses, holder: {}, amount: {}, date: {}, status: {}";
+        String logString = "/expenses, account: {}, amount: {}, date: {}, status: {}";
         try {
             RecordView res = addRecordService.addRecord(
                     wrapper.getDescription(),
@@ -63,6 +64,7 @@ public class RecordController {
                     wrapper.getCurrency(),
                     wrapper.getDate(),
                     wrapper.getType(),
+                    wrapper.getAccountId(),
                     holderId);
 
             logger.debug(logString,
@@ -88,6 +90,14 @@ public class RecordController {
                     HttpStatus.BAD_REQUEST);
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
+        } catch (WrongAccountIdException e) {
+            logger.debug(logString,
+                    holderId,
+                    wrapper.getAmount(),
+                    new Date(wrapper.getDate()),
+                    HttpStatus.FORBIDDEN);
+
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Wrong account id");
         }
     }
 
