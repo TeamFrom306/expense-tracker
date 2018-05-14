@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class DayExpensesCalculator extends DayRecordsCalculator {
     @Override
-    public void fillMap(int accountId, Map<String, Double> res) {
-        res.put("dayAvgExpenses", getAverage(accountId));
+    public void fillMap(int holderId, Map<String, Double> res) {
+        res.put("dayAvgExpenses", getAverage(holderId));
     }
 
     @Override

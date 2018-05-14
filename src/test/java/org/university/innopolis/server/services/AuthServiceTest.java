@@ -6,14 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.university.innopolis.server.TestConf;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
 import org.university.innopolis.server.services.realization.AuthService;
 import org.university.innopolis.server.services.realization.helpers.ShaHashEncoder;
-import org.university.innopolis.server.views.AccountView;
+import org.university.innopolis.server.views.HolderView;
 
 import javax.persistence.EntityManager;
 
@@ -37,7 +36,7 @@ public class AuthServiceTest {
     private static String password = "password";
     private static String login = "login";
     private static int id = -1;
-    private static AccountView view;
+    private static HolderView view;
 
     @Test
     public void testSuite() throws Exception {
@@ -71,21 +70,21 @@ public class AuthServiceTest {
     }
 
     public void test00() throws DuplicatedUserException, BadCredentialsException {
-        view = authService.registerAccount(login, password);
+        view = authService.registerHolder(login, password);
         assertEquals(login, view.getLogin());
         assertNull(view.getToken());
     }
 
     public void test01() throws DuplicatedUserException, BadCredentialsException {
-        authService.registerAccount(login, "password2");
+        authService.registerHolder(login, "password2");
     }
 
     public void test02() throws BadCredentialsException {
-        AccountView res = authService.getAuthentication(login, password);
+        HolderView res = authService.getAuthentication(login, password);
         assertEquals(login, res.getLogin());
         assertNotNull(res.getToken());
-        assertNotEquals(-1, authService.getAccountId(res.getToken()));
-        id = authService.getAccountId(res.getToken());
+        assertNotEquals(-1, authService.getHolderId(res.getToken()));
+        id = authService.getHolderId(res.getToken());
         view = res;
     }
 
@@ -98,17 +97,17 @@ public class AuthServiceTest {
     }
 
     public void test05() throws BadCredentialsException {
-        AccountView res = authService.getAuthentication(login, password);
+        HolderView res = authService.getAuthentication(login, password);
         assertEquals(view.getLogin(), res.getLogin());
         assertEquals(view.getToken(), res.getToken());
     }
 
     public void test06() {
         assertNotEquals(-1, id);
-        assertEquals(id, authService.getAccountId(view.getToken()));
+        assertEquals(id, authService.getHolderId(view.getToken()));
         authService.revokeToken(view.getToken());
         entityManager.clear();
-        assertEquals(-1, authService.getAccountId(view.getToken()));
+        assertEquals(-1, authService.getHolderId(view.getToken()));
     }
 
     public void test07() {
@@ -117,17 +116,17 @@ public class AuthServiceTest {
     }
 
     public void test08() {
-        assertEquals(-1, authService.getAccountId(null));
+        assertEquals(-1, authService.getHolderId(null));
     }
 
     public void test09() throws BadCredentialsException, InterruptedException {
         entityManager.clear();
         Thread.sleep(1000);
-        AccountView res = authService.getAuthentication(login, password);
+        HolderView res = authService.getAuthentication(login, password);
         assertNotEquals(view.getToken(), res.getToken());
-        id = authService.getAccountId(res.getToken());
+        id = authService.getHolderId(res.getToken());
         authService.revokeTokenById(id);
-        assertEquals(-1, authService.getAccountId(res.getToken()));
+        assertEquals(-1, authService.getHolderId(res.getToken()));
     }
 
     public void test10() {

@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.university.innopolis.server.services.AuthenticationService;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
-import org.university.innopolis.server.views.AccountView;
+import org.university.innopolis.server.views.HolderView;
 import org.university.innopolis.server.wrappers.CredentialsWrapper;
 
 import javax.validation.Valid;
@@ -32,9 +32,9 @@ public class AuthenticationController {
     ResponseEntity login(@Valid @RequestBody CredentialsWrapper wrapper) {
         String logString = "/login, login: {}, password: {}, status: {}";
         try {
-            AccountView account = authService.getAuthentication(wrapper.getLogin(), wrapper.getPassword());
+            HolderView holder = authService.getAuthentication(wrapper.getLogin(), wrapper.getPassword());
             logger.debug(logString, wrapper.getLogin(), wrapper.getPassword(), HttpStatus.OK);
-            return ResponseEntity.ok(account);
+            return ResponseEntity.ok(holder);
         } catch (BadCredentialsException ignored) {
             logger.debug(logString, wrapper.getLogin(), wrapper.getPassword(), HttpStatus.UNAUTHORIZED);
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
@@ -42,12 +42,12 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/register")
-    ResponseEntity createAccount(@Valid @RequestBody CredentialsWrapper wrapper) {
+    ResponseEntity createHolder(@Valid @RequestBody CredentialsWrapper wrapper) {
         String logString = "/register, login: {}, password: {}, status: {}";
         try {
-            AccountView account = authService.registerAccount(wrapper.getLogin(), wrapper.getPassword());
+            HolderView holder = authService.registerHolder(wrapper.getLogin(), wrapper.getPassword());
             logger.debug(logString, wrapper.getLogin(), wrapper.getPassword(), HttpStatus.OK);
-            return ResponseEntity.ok(account);
+            return ResponseEntity.ok(holder);
         } catch (DuplicatedUserException ignored) {
             logger.debug(logString, wrapper.getLogin(), wrapper.getPassword(), HttpStatus.CONFLICT);
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This login is already taken");
@@ -58,10 +58,10 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/logout")
-    ResponseEntity logout(@RequestAttribute int accountId) {
-        String logString = "/logout, account: {}, status: {}";
-        authService.revokeTokenById(accountId);
-        logger.debug(logString, accountId, HttpStatus.OK);
+    ResponseEntity logout(@RequestAttribute int holderId) {
+        String logString = "/logout, holder: {}, status: {}";
+        authService.revokeTokenById(holderId);
+        logger.debug(logString, holderId, HttpStatus.OK);
         return ResponseEntity.ok().build();
     }
 }

@@ -12,7 +12,7 @@ public interface AddRecordService {
                          Currency currency,
                          long date,
                          Type type,
-                         int accountId) throws
+                         int holderId) throws
             WrongAmountValueException,
             WrongDateParameterException;
 }

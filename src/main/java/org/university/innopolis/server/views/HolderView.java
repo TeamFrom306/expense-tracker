@@ -2,12 +2,12 @@ package org.university.innopolis.server.views;
 
 import java.io.Serializable;
 
-public class AccountView implements Serializable {
+public class HolderView implements Serializable {
     private final String login;
     private final String token;
     private final double balance;
 
-    public AccountView(String login, String token, double balance) {
+    public HolderView(String login, String token, double balance) {
         this.login = login;
         this.token = token;
         this.balance = balance;

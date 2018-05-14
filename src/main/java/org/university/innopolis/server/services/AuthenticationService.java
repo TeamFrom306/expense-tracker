@@ -2,18 +2,18 @@ package org.university.innopolis.server.services;
 
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
-import org.university.innopolis.server.views.AccountView;
+import org.university.innopolis.server.views.HolderView;
 
 public interface AuthenticationService {
-    AccountView getAuthentication(String login, String password) throws BadCredentialsException;
+    HolderView getAuthentication(String login, String password) throws BadCredentialsException;
 
-    int getAccountId(String token);
+    int getHolderId(String token);
 
     void revokeTokenById(int id);
 
-    AccountView registerAccount(String login, String password) throws DuplicatedUserException, BadCredentialsException;
+    HolderView registerHolder(String login, String password) throws DuplicatedUserException, BadCredentialsException;
 
-    boolean isAuthorized(int accountId, String login);
+    boolean isAuthorized(int holderId, String login);
 
     void revokeToken(String token);
 }

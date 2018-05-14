@@ -16,17 +16,17 @@ public abstract class RecordsCalculatorBase implements RecordsCalculator {
     private Map<Integer, List<RecordView>> queue = new HashMap<>();
 
     @Override
-    public void registerRecord(int accountId, RecordView record) {
-        queue.computeIfAbsent(accountId, k -> new ArrayList<>());
-        total.putIfAbsent(accountId, 0d);
+    public void registerRecord(int holderId, RecordView record) {
+        queue.computeIfAbsent(holderId, k -> new ArrayList<>());
+        total.putIfAbsent(holderId, 0d);
 
         long startTime = computeTime();
         if (record.getDate().getTime() / 1000 < startTime)
             return;
 
-        List<RecordView> recordList = queue.get(accountId);
+        List<RecordView> recordList = queue.get(holderId);
         recordList.add(record);
-        total.compute(accountId, (k, v) -> v + record.getAmount());
+        total.compute(holderId, (k, v) -> v + record.getAmount());
     }
 
     @Override
@@ -53,17 +53,17 @@ public abstract class RecordsCalculatorBase implements RecordsCalculator {
         }
     }
 
-    double getAverage(int accountId) {
-        List<RecordView> list = filterByTime(accountId);
+    double getAverage(int holderId) {
+        List<RecordView> list = filterByTime(holderId);
 
         if (list == null)
             return 0;
 
-        return total.get(accountId) / (list.isEmpty() ? 1 : list.size());
+        return total.get(holderId) / (list.isEmpty() ? 1 : list.size());
     }
 
-    private List<RecordView> filterByTime(int accountId) {
-        List<RecordView> list = queue.get(accountId);
+    private List<RecordView> filterByTime(int holderId) {
+        List<RecordView> list = queue.get(holderId);
         if (list == null)
             return null;
         long startTime = computeTime();
@@ -71,7 +71,7 @@ public abstract class RecordsCalculatorBase implements RecordsCalculator {
         while (i < list.size()) {
             RecordView record = list.get(i);
             if (record.getDate().getTime() / 1000 < startTime) {
-                total.compute(accountId, (k, v) -> v - record.getAmount());
+                total.compute(holderId, (k, v) -> v - record.getAmount());
                 list.remove(i);
             } else {
                 i++;

@@ -2,54 +2,54 @@ package org.university.innopolis.server.services.realization;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.university.innopolis.server.model.Account;
-import org.university.innopolis.server.persistence.AccountRepository;
+import org.university.innopolis.server.model.Holder;
+import org.university.innopolis.server.persistence.HolderRepository;
 import org.university.innopolis.server.services.AuthenticationService;
 import org.university.innopolis.server.services.TokenService;
 import org.university.innopolis.server.services.exceptions.BadCredentialsException;
 import org.university.innopolis.server.services.exceptions.DuplicatedUserException;
 import org.university.innopolis.server.services.realization.helpers.CredentialValidator;
-import org.university.innopolis.server.services.realization.mappers.AccountMapper;
+import org.university.innopolis.server.services.realization.mappers.HolderMapper;
 import org.university.innopolis.server.services.realization.helpers.EncoderService;
-import org.university.innopolis.server.views.AccountView;
+import org.university.innopolis.server.views.HolderView;
 
 import java.util.Objects;
 
 @Component
 public class AuthService implements AuthenticationService {
-    private AccountRepository accountRepository;
+    private HolderRepository holderRepository;
     private TokenService tokenService;
     private EncoderService shaEncoder;
 
     @Autowired
-    public AuthService(AccountRepository accountRepository,
+    public AuthService(HolderRepository holderRepository,
                        TokenService tokenService,
                        EncoderService shaEncoder) {
-        this.accountRepository = accountRepository;
+        this.holderRepository = holderRepository;
         this.tokenService = tokenService;
         this.shaEncoder = shaEncoder;
     }
 
     @Override
-    public int getAccountId(String token) {
+    public int getHolderId(String token) {
         if (token == null)
             return -1;
-        Account account = accountRepository.getByToken(token);
-        return account == null ? -1 : account.getId();
+        Holder holder = holderRepository.getByToken(token);
+        return holder == null ? -1 : holder.getId();
     }
 
     @Override
     public void revokeTokenById(int id) {
-        Account account = accountRepository.getById(id);
-        if (account != null) {
-            account.setToken(null);
-            accountRepository.save(account);
+        Holder holder = holderRepository.getById(id);
+        if (holder != null) {
+            holder.setToken(null);
+            holderRepository.save(holder);
         }
     }
 
 
     @Override
-    public AccountView registerAccount(String login, String password) throws
+    public HolderView registerHolder(String login, String password) throws
             DuplicatedUserException,
             BadCredentialsException {
         CredentialValidator.validateCredentials(login, password);
@@ -59,46 +59,46 @@ public class AuthService implements AuthenticationService {
         if (containsLogin(login))
             throw new DuplicatedUserException(login);
 
-        Account res = accountRepository.save(new Account(login, encodedPassword));
-        return AccountMapper.map(res);
+        Holder res = holderRepository.save(new Holder(login, encodedPassword));
+        return HolderMapper.map(res);
     }
 
     @Override
-    public AccountView getAuthentication(String login, String password) throws BadCredentialsException {
+    public HolderView getAuthentication(String login, String password) throws BadCredentialsException {
         CredentialValidator.validateCredentials(login, password);
 
         final String encodedPassword = shaEncoder.getHash(password);
 
-        Account account = accountRepository.getByLogin(login);
-        if (account == null || !checkPasswords(encodedPassword, account))
+        Holder holder = holderRepository.getByLogin(login);
+        if (holder == null || !checkPasswords(encodedPassword, holder))
             throw new BadCredentialsException();
-        if (account.getToken() == null)
-            storeToken(account, login);
-        return AccountMapper.map(account);
+        if (holder.getToken() == null)
+            storeToken(holder, login);
+        return HolderMapper.map(holder);
     }
 
     @Override
-    public boolean isAuthorized(int accountId, String login) {
-        Account account = accountRepository.getByIdAndLogin(accountId, login);
-        return account != null;
+    public boolean isAuthorized(int holderId, String login) {
+        Holder holder = holderRepository.getByIdAndLogin(holderId, login);
+        return holder != null;
     }
 
     @Override
     public void revokeToken(String token) {
-        accountRepository.setTokenNull(token);
+        holderRepository.setTokenNull(token);
     }
 
     private boolean containsLogin(String login) {
-        return accountRepository.getByLogin(login) != null;
+        return holderRepository.getByLogin(login) != null;
     }
 
-    private boolean checkPasswords(String password, Account account) {
-        return Objects.equals(account.getPassword(), password);
+    private boolean checkPasswords(String password, Holder holder) {
+        return Objects.equals(holder.getPassword(), password);
     }
 
-    private void storeToken(Account account, String login) {
-        String token = tokenService.generateToken(login, account.getId());
-        account.setToken(token);
-        accountRepository.save(account);
+    private void storeToken(Holder holder, String login) {
+        String token = tokenService.generateToken(login, holder.getId());
+        holder.setToken(token);
+        holderRepository.save(holder);
     }
 }

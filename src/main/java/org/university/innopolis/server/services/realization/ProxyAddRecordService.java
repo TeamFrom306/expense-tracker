@@ -30,19 +30,19 @@ public class ProxyAddRecordService implements AddRecordService, AvgRecordService
                                 Currency currency,
                                 long date,
                                 Type type,
-                                int accountId) throws
+                                int holderId) throws
             WrongAmountValueException,
             WrongDateParameterException {
-        RecordView record = addRecordService.addRecord(description, amount, currency, date, type, accountId);
+        RecordView record = addRecordService.addRecord(description, amount, currency, date, type, holderId);
         if (record == null)
             return null;
-        calculatorManager.appendRecord(accountId, record);
+        calculatorManager.appendRecord(holderId, record);
 
         return record;
     }
 
     @Override
-    public Map<String, Double> getAvgStat(int accountId) {
-        return calculatorManager.getStats(accountId);
+    public Map<String, Double> getAvgStat(int holderId) {
+        return calculatorManager.getStats(holderId);
     }
 }

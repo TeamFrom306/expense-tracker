@@ -3,7 +3,6 @@ package org.university.innopolis.server.model;
 import org.hibernate.annotations.GenericGenerator;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
-import org.university.innopolis.server.model.Category;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,7 +20,7 @@ public class Record {
     private Type type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Account account;
+    private Holder holder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
@@ -80,8 +79,8 @@ public class Record {
         return id;
     }
 
-    public Account getAccount() {
-        return account;
+    public Holder getHolder() {
+        return holder;
     }
 
     public Category getCategory() {
@@ -96,7 +95,7 @@ public class Record {
         this.type = type;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setHolder(Holder holder) {
+        this.holder = holder;
     }
 }

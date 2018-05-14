@@ -14,7 +14,7 @@ public class Category {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Account account;
+    private Holder holder;
 
     protected Category() {
     }
@@ -35,7 +35,7 @@ public class Category {
         return id;
     }
 
-    public Account getAccount() {
-        return account;
+    public Holder getHolder() {
+        return holder;
     }
 }

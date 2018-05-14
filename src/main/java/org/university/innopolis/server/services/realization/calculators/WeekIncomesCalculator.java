@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class WeekIncomesCalculator extends WeekRecordsCalculator {
     @Override
-    public void fillMap(int accountId, Map<String, Double> res) {
-        res.put("weekAvgIncomes", getAverage(accountId));
+    public void fillMap(int holderId, Map<String, Double> res) {
+        res.put("weekAvgIncomes", getAverage(holderId));
     }
 
     @Override

@@ -44,18 +44,18 @@ public class RecordController {
 
     @PostMapping(path = "/expenses")
     ResponseEntity addExpense(@Valid @RequestBody ExpenseWrapper wrapper,
-                              @RequestAttribute int accountId) {
-        return ResponseEntity.ok(addRecord(wrapper, accountId));
+                              @RequestAttribute int holderId) {
+        return ResponseEntity.ok(addRecord(wrapper, holderId));
     }
 
     @PostMapping(path = "/incomes")
     ResponseEntity addIncome(@Valid @RequestBody IncomeWrapper wrapper,
-                             @RequestAttribute int accountId) {
-        return ResponseEntity.ok(addRecord(wrapper, accountId));
+                             @RequestAttribute int holderId) {
+        return ResponseEntity.ok(addRecord(wrapper, holderId));
     }
 
-    private RecordView addRecord(RecordWrapper wrapper, int accountId) {
-        String logString = "/expenses, account: {}, amount: {}, date: {}, status: {}";
+    private RecordView addRecord(RecordWrapper wrapper, int holderId) {
+        String logString = "/expenses, holder: {}, amount: {}, date: {}, status: {}";
         try {
             RecordView res = addRecordService.addRecord(
                     wrapper.getDescription(),
@@ -63,10 +63,10 @@ public class RecordController {
                     wrapper.getCurrency(),
                     wrapper.getDate(),
                     wrapper.getType(),
-                    accountId);
+                    holderId);
 
             logger.debug(logString,
-                    accountId,
+                    holderId,
                     wrapper.getAmount(),
                     new Date(wrapper.getDate()),
                     HttpStatus.OK);
@@ -74,7 +74,7 @@ public class RecordController {
             return res;
         } catch (WrongDateParameterException e) {
             logger.debug(logString,
-                    accountId,
+                    holderId,
                     wrapper.getAmount(),
                     new Date(wrapper.getDate()),
                     HttpStatus.BAD_REQUEST);
@@ -82,7 +82,7 @@ public class RecordController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date value");
         } catch (WrongAmountValueException e) {
             logger.debug(logString,
-                    accountId,
+                    holderId,
                     wrapper.getAmount(),
                     new Date(wrapper.getDate()),
                     HttpStatus.BAD_REQUEST);
@@ -92,35 +92,35 @@ public class RecordController {
     }
 
     @GetMapping(path = "/expenses")
-    ResponseEntity getExpenses(@RequestAttribute int accountId) {
-        List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, accountId);
-        logger.debug("/expenses, account: {}, status: {}", accountId, HttpStatus.OK);
+    ResponseEntity getExpenses(@RequestAttribute int holderId) {
+        List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, holderId);
+        logger.debug("/expenses, holder: {}, status: {}", holderId, HttpStatus.OK);
         return ResponseEntity.ok(records);
     }
 
     @GetMapping(path = "/incomes")
-    ResponseEntity getIncomes(@RequestAttribute int accountId) {
-        List<RecordView> records = getRecordService.getRecords(Type.INCOME, accountId);
-        logger.debug("/incomes, account: {}, status: {}", accountId, HttpStatus.OK);
+    ResponseEntity getIncomes(@RequestAttribute int holderId) {
+        List<RecordView> records = getRecordService.getRecords(Type.INCOME, holderId);
+        logger.debug("/incomes, holder: {}, status: {}", holderId, HttpStatus.OK);
         return ResponseEntity.ok(records);
     }
 
     @GetMapping(path = "/all")
     ResponseEntity getAllRecords(@RequestParam(defaultValue = "20", required = false) int count,
                                  @RequestParam(defaultValue = "0", required = false) int page,
-                                 @RequestAttribute int accountId) {
-        logger.debug("/all, account: {}, count: {}, page: {}, status: {}",
-                accountId,
+                                 @RequestAttribute int holderId) {
+        logger.debug("/all, holder: {}, count: {}, page: {}, status: {}",
+                holderId,
                 count,
                 page,
                 HttpStatus.OK);
-        return ResponseEntity.ok(getRecordService.getAllRecords(accountId, count, page));
+        return ResponseEntity.ok(getRecordService.getAllRecords(holderId, count, page));
     }
 
     @GetMapping(path = "/stat")
-    ResponseEntity getStat(@RequestAttribute int accountId) {
-        Map<String, Double> avgStat = avgRecordService.getAvgStat(accountId);
-        logger.debug("/stat, account: {}, status: {}", accountId, HttpStatus.OK);
+    ResponseEntity getStat(@RequestAttribute int holderId) {
+        Map<String, Double> avgStat = avgRecordService.getAvgStat(holderId);
+        logger.debug("/stat, holder: {}, status: {}", holderId, HttpStatus.OK);
         return ResponseEntity.ok(avgStat);
     }
 }

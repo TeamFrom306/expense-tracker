@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.university.innopolis.server.services.AccountService;
+import org.university.innopolis.server.services.HolderService;
 import org.university.innopolis.server.services.AuthenticationService;
-import org.university.innopolis.server.views.AccountView;
+import org.university.innopolis.server.views.HolderView;
 import org.university.innopolis.server.wrappers.BalanceWrapper;
 
 import javax.validation.Valid;
@@ -18,40 +18,40 @@ import javax.validation.Valid;
 @Controller
 @CrossOrigin("*")
 @RequestMapping(path = "/api")
-public class AccountController {
-    private AccountService accountService;
+public class HolderController {
+    private HolderService holderService;
     private AuthenticationService authService;
 
-    private static Logger logger = LoggerFactory.getLogger(AccountController.class);
+    private static Logger logger = LoggerFactory.getLogger(HolderController.class);
 
     @Autowired
-    public AccountController(AccountService accountService, AuthenticationService authService) {
-        this.accountService = accountService;
+    public HolderController(HolderService holderService, AuthenticationService authService) {
+        this.holderService = holderService;
         this.authService = authService;
     }
 
     @PostMapping(path = "/balance")
     ResponseEntity adjustBalance(@Valid @RequestBody BalanceWrapper wrapper,
-                                 @RequestAttribute int accountId) {
-        logger.debug("/balance, account: {}", accountId);
-        return ResponseEntity.ok(accountService.adjustBalance(wrapper.getBalance(), accountId));
+                                 @RequestAttribute int holderId) {
+        logger.debug("/balance, holder: {}", holderId);
+        return ResponseEntity.ok(holderService.adjustBalance(wrapper.getBalance(), holderId));
     }
 
     @GetMapping(path = "/user")
-    ResponseEntity getAccount(@RequestParam String login,
-                              @RequestAttribute int accountId) {
-        String logString = "/user, account: {}, login: {}, status: {}";
+    ResponseEntity getHolder(@RequestParam String login,
+                             @RequestAttribute int holderId) {
+        String logString = "/user, holder: {}, login: {}, status: {}";
 
-        if (!authService.isAuthorized(accountId, login)) {
-            logger.debug(logString, accountId, login, HttpStatus.FORBIDDEN);
+        if (!authService.isAuthorized(holderId, login)) {
+            logger.debug(logString, holderId, login, HttpStatus.FORBIDDEN);
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        AccountView res = accountService.findAccount(login);
+        HolderView res = holderService.findHolder(login);
         if (res == null) {
-            logger.debug(logString, accountId, login, HttpStatus.NOT_FOUND);
+            logger.debug(logString, holderId, login, HttpStatus.NOT_FOUND);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with this login is not found");
         }
-        logger.debug(logString, accountId, login, HttpStatus.OK);
+        logger.debug(logString, holderId, login, HttpStatus.OK);
         return ResponseEntity.ok(res);
     }
 }
