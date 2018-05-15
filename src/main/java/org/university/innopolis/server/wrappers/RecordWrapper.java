@@ -13,6 +13,8 @@ public abstract class RecordWrapper {
     private Currency currency;
     @NotNull
     private long date;
+    @NotNull
+    private int accountId;
 
     public RecordWrapper() {
     }
@@ -33,5 +35,9 @@ public abstract class RecordWrapper {
 
     public long getDate() {
         return date;
+    }
+
+    public int getAccountId() {
+        return accountId;
     }
 }

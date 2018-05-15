@@ -5,12 +5,10 @@ import java.io.Serializable;
 public class HolderView implements Serializable {
     private final String login;
     private final String token;
-    private final double balance;
 
-    public HolderView(String login, String token, double balance) {
+    public HolderView(String login, String token) {
         this.login = login;
         this.token = token;
-        this.balance = balance;
     }
 
     public String getLogin() {
@@ -19,9 +17,5 @@ public class HolderView implements Serializable {
 
     public String getToken() {
         return token;
-    }
-
-    public double getBalance() {
-        return balance;
     }
 }

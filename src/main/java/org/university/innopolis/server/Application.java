@@ -22,6 +22,7 @@ public class Application {
         authFilterBean.addUrlPatterns("/api/balance/*");
         authFilterBean.addUrlPatterns("/api/logout/*");
         authFilterBean.addUrlPatterns("/api/records/*");
+        authFilterBean.addUrlPatterns("/api/account");
         return authFilterBean;
     }
 }

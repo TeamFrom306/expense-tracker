@@ -9,7 +9,6 @@ public class HolderMapper {
     public static HolderView map(Holder holder) {
         return new HolderView(
                 holder.getLogin(),
-                holder.getToken(),
-                holder.getBalance());
+                holder.getToken());
     }
 }

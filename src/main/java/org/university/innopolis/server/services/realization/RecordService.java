@@ -6,12 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.university.innopolis.server.common.Currency;
 import org.university.innopolis.server.common.Type;
-import org.university.innopolis.server.model.Holder;
-import org.university.innopolis.server.persistence.HolderRepository;
-import org.university.innopolis.server.persistence.RecordRepository;
+import org.university.innopolis.server.model.Account;
 import org.university.innopolis.server.model.Record;
+import org.university.innopolis.server.persistence.AccountRepository;
+import org.university.innopolis.server.persistence.RecordRepository;
 import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.GetRecordService;
+import org.university.innopolis.server.services.exceptions.WrongAccountIdException;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.services.realization.mappers.RecordMapper;
@@ -25,13 +26,13 @@ import java.util.stream.Collectors;
 @Service("addRecordService")
 public class RecordService implements AddRecordService, GetRecordService {
     private RecordRepository recordRepository;
-    private HolderRepository holderRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
     public RecordService(RecordRepository recordRepository,
-                         HolderRepository holderRepository) {
+                         AccountRepository accountRepository) {
         this.recordRepository = recordRepository;
-        this.holderRepository = holderRepository;
+        this.accountRepository = accountRepository;
     }
 
     @Override
@@ -40,29 +41,34 @@ public class RecordService implements AddRecordService, GetRecordService {
                                 Currency currency,
                                 long date,
                                 Type type,
+                                int accountId,
                                 int holderId) throws
             WrongAmountValueException,
-            WrongDateParameterException {
+            WrongDateParameterException,
+            WrongAccountIdException {
 
         checkAmount(amount);
         Date properDate = tryParseDate(date);
 
-        Holder holder = holderRepository.getById(holderId);
-        if (holder == null)
+        Account account = accountRepository.getById(accountId);
+        if (account == null)
             return null;
+        if (account.getHolder() == null || account.getHolder().getId() != holderId)
+            throw new WrongAccountIdException();
+
 
         Record record = new Record(amount, currency, properDate, type);
-        record.setHolder(holder);
+        record.setAccount(account);
 
         if (!(description == null || "".equals(description))) {
             record.setDescription(description);
         }
 
-        holder.setBalance(record.getType() == Type.INCOME ?
-                holder.getBalance() + record.getAmount() :
-                holder.getBalance() - record.getAmount());
+        account.setBalance(record.getType() == Type.INCOME ?
+                account.getBalance() + record.getAmount() :
+                account.getBalance() - record.getAmount());
 
-        holderRepository.save(holder);
+        accountRepository.save(account);
         record = recordRepository.save(record);
 
         return RecordMapper.map(record);
@@ -70,7 +76,7 @@ public class RecordService implements AddRecordService, GetRecordService {
 
     @Override
     public List<RecordView> getRecords(Type type, int holderId) {
-        List<Record> records = recordRepository.getRecordsByHolder_Id(holderId);
+        List<Record> records = recordRepository.getRecordsByAccountHolderIdOrderByDateDesc(holderId);
 
         records = records
                 .stream()
@@ -87,22 +93,28 @@ public class RecordService implements AddRecordService, GetRecordService {
     }
 
     @Override
-    public List<RecordView> getAllRecords(int holderId) {
-        List<Record> records = recordRepository.getRecordsByHolder_Id(holderId);
-
-        List<RecordView> recordViews = new ArrayList<>();
-
-        for (Record r : records) {
-            recordViews.add(RecordMapper.map(r));
-        }
-
-        return recordViews;
+    public List<RecordView> getAllRecords(int holderId, int count, int offset) {
+        return getAllRecords(holderId, count, offset, -1);
     }
 
     @Override
-    public List<RecordView> getAllRecords(int holderId, int count, int page) {
-        Pageable pageable = PageRequest.of(page, count);
-        List<Record> records = recordRepository.getRecordsByHolder_IdOrderByDateDesc(holderId, pageable);
+    public List<RecordView> getAllRecords(int holderId, int count, int offset, int accountId) {
+        Pageable pageable = PageRequest.of(offset, count);
+        List<Record> records;
+
+        if (accountId == -1) {
+            records = recordRepository
+                    .getRecordsByAccountHolderIdOrderByDateDesc(
+                            holderId,
+                            pageable);
+        } else {
+            records = recordRepository
+                    .getRecordsByAccountIdAndAccountHolderIdOrderByDateDesc(
+                            accountId,
+                            holderId,
+                            pageable);
+        }
+
         List<RecordView> recordViews = new ArrayList<>();
 
         for (Record r : records) {

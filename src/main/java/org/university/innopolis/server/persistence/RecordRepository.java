@@ -12,7 +12,14 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
 
     List<Record> getByType(Type type);
 
-    List<Record> getRecordsByHolder_Id(int holder_id);
+    List<Record> getRecordsByAccountHolderIdOrderByDateDesc(int holderId);
 
-    List<Record> getRecordsByHolder_IdOrderByDateDesc(int holder_id, Pageable pageable);
+    List<Record> getRecordsByAccountHolderIdOrderByDateDesc(
+            int holderId,
+            Pageable pageable);
+
+    List<Record> getRecordsByAccountIdAndAccountHolderIdOrderByDateDesc(
+            int accountId,
+            int accountHolderId,
+            Pageable pageable);
 }

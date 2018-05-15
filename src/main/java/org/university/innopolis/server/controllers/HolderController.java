@@ -8,12 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.university.innopolis.server.services.HolderService;
+import org.university.innopolis.server.services.AccountService;
 import org.university.innopolis.server.services.AuthenticationService;
+import org.university.innopolis.server.services.HolderService;
 import org.university.innopolis.server.views.HolderView;
-import org.university.innopolis.server.wrappers.BalanceWrapper;
-
-import javax.validation.Valid;
 
 @Controller
 @CrossOrigin("*")
@@ -25,16 +23,11 @@ public class HolderController {
     private static Logger logger = LoggerFactory.getLogger(HolderController.class);
 
     @Autowired
-    public HolderController(HolderService holderService, AuthenticationService authService) {
+    public HolderController(HolderService holderService,
+                            AuthenticationService authService,
+                            AccountService accountService) {
         this.holderService = holderService;
         this.authService = authService;
-    }
-
-    @PostMapping(path = "/balance")
-    ResponseEntity adjustBalance(@Valid @RequestBody BalanceWrapper wrapper,
-                                 @RequestAttribute int holderId) {
-        logger.debug("/balance, holder: {}", holderId);
-        return ResponseEntity.ok(holderService.adjustBalance(wrapper.getBalance(), holderId));
     }
 
     @GetMapping(path = "/user")

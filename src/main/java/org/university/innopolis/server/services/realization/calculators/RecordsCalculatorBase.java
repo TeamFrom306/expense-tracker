@@ -16,17 +16,17 @@ public abstract class RecordsCalculatorBase implements RecordsCalculator {
     private Map<Integer, List<RecordView>> queue = new HashMap<>();
 
     @Override
-    public void registerRecord(int holderId, RecordView record) {
-        queue.computeIfAbsent(holderId, k -> new ArrayList<>());
-        total.putIfAbsent(holderId, 0d);
+    public void registerRecord(int accountId, RecordView record) {
+        queue.computeIfAbsent(accountId, k -> new ArrayList<>());
+        total.putIfAbsent(accountId, 0d);
 
         long startTime = computeTime();
         if (record.getDate().getTime() / 1000 < startTime)
             return;
 
-        List<RecordView> recordList = queue.get(holderId);
+        List<RecordView> recordList = queue.get(accountId);
         recordList.add(record);
-        total.compute(holderId, (k, v) -> v + record.getAmount());
+        total.compute(accountId, (k, v) -> v + record.getAmount());
     }
 
     @Override

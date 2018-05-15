@@ -12,6 +12,7 @@ import org.university.innopolis.server.common.Type;
 import org.university.innopolis.server.services.AddRecordService;
 import org.university.innopolis.server.services.AvgRecordService;
 import org.university.innopolis.server.services.GetRecordService;
+import org.university.innopolis.server.services.exceptions.WrongAccountIdException;
 import org.university.innopolis.server.services.exceptions.WrongAmountValueException;
 import org.university.innopolis.server.services.exceptions.WrongDateParameterException;
 import org.university.innopolis.server.views.RecordView;
@@ -54,8 +55,22 @@ public class RecordController {
         return ResponseEntity.ok(addRecord(wrapper, holderId));
     }
 
+    @GetMapping(path = "/expenses")
+    ResponseEntity getExpenses(@RequestAttribute int holderId) {
+        List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, holderId);
+        logger.debug("/expenses, holder: {}, status: {}", holderId, HttpStatus.OK);
+        return ResponseEntity.ok(records);
+    }
+
+    @GetMapping(path = "/incomes")
+    ResponseEntity getIncomes(@RequestAttribute int holderId) {
+        List<RecordView> records = getRecordService.getRecords(Type.INCOME, holderId);
+        logger.debug("/incomes, holder: {}, status: {}", holderId, HttpStatus.OK);
+        return ResponseEntity.ok(records);
+    }
+
     private RecordView addRecord(RecordWrapper wrapper, int holderId) {
-        String logString = "/expenses, holder: {}, amount: {}, date: {}, status: {}";
+        String logString = "/expenses, account: {}, amount: {}, date: {}, status: {}";
         try {
             RecordView res = addRecordService.addRecord(
                     wrapper.getDescription(),
@@ -63,6 +78,7 @@ public class RecordController {
                     wrapper.getCurrency(),
                     wrapper.getDate(),
                     wrapper.getType(),
+                    wrapper.getAccountId(),
                     holderId);
 
             logger.debug(logString,
@@ -88,33 +104,32 @@ public class RecordController {
                     HttpStatus.BAD_REQUEST);
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount value");
+        } catch (WrongAccountIdException e) {
+            logger.debug(logString,
+                    holderId,
+                    wrapper.getAmount(),
+                    new Date(wrapper.getDate()),
+                    HttpStatus.FORBIDDEN);
+
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Wrong account id");
         }
-    }
-
-    @GetMapping(path = "/expenses")
-    ResponseEntity getExpenses(@RequestAttribute int holderId) {
-        List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, holderId);
-        logger.debug("/expenses, holder: {}, status: {}", holderId, HttpStatus.OK);
-        return ResponseEntity.ok(records);
-    }
-
-    @GetMapping(path = "/incomes")
-    ResponseEntity getIncomes(@RequestAttribute int holderId) {
-        List<RecordView> records = getRecordService.getRecords(Type.INCOME, holderId);
-        logger.debug("/incomes, holder: {}, status: {}", holderId, HttpStatus.OK);
-        return ResponseEntity.ok(records);
     }
 
     @GetMapping(path = "/all")
     ResponseEntity getAllRecords(@RequestParam(defaultValue = "20", required = false) int count,
                                  @RequestParam(defaultValue = "0", required = false) int page,
+                                 @RequestParam(defaultValue = "-1", required = false) int accountId,
                                  @RequestAttribute int holderId) {
-        logger.debug("/all, holder: {}, count: {}, page: {}, status: {}",
+        logger.debug("/all, holder: {}, account: {}, count: {}, page: {}, status: {}",
                 holderId,
+                accountId,
                 count,
                 page,
                 HttpStatus.OK);
-        return ResponseEntity.ok(getRecordService.getAllRecords(holderId, count, page));
+        if (accountId == -1)
+            return ResponseEntity.ok(getRecordService.getAllRecords(holderId, count, page));
+        else
+            return ResponseEntity.ok(getRecordService.getAllRecords(holderId, count, page, accountId));
     }
 
     @GetMapping(path = "/stat")
