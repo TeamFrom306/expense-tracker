@@ -76,7 +76,7 @@ public class RecordService implements AddRecordService, GetRecordService {
 
     @Override
     public List<RecordView> getRecords(Type type, int holderId) {
-        List<Record> records = recordRepository.getRecordsByAccount_Holder_Id(holderId);
+        List<Record> records = recordRepository.getRecordsByAccountHolderIdOrderByDateDesc(holderId);
 
         records = records
                 .stream()
@@ -93,22 +93,28 @@ public class RecordService implements AddRecordService, GetRecordService {
     }
 
     @Override
-    public List<RecordView> getAllRecords(int holderId) {
-        List<Record> records = recordRepository.getRecordsByAccount_Holder_Id(holderId);
-
-        List<RecordView> recordViews = new ArrayList<>();
-
-        for (Record r : records) {
-            recordViews.add(RecordMapper.map(r));
-        }
-
-        return recordViews;
+    public List<RecordView> getAllRecords(int holderId, int count, int offset) {
+        return getAllRecords(holderId, count, offset, -1);
     }
 
     @Override
-    public List<RecordView> getAllRecords(int holderId, int count, int page) {
-        Pageable pageable = PageRequest.of(page, count);
-        List<Record> records = recordRepository.getRecordsByAccount_Holder_IdOrderByDateDesc(holderId, pageable);
+    public List<RecordView> getAllRecords(int holderId, int count, int offset, int accountId) {
+        Pageable pageable = PageRequest.of(offset, count);
+        List<Record> records;
+
+        if (accountId == -1) {
+            records = recordRepository
+                    .getRecordsByAccountHolderIdOrderByDateDesc(
+                            holderId,
+                            pageable);
+        } else {
+            records = recordRepository
+                    .getRecordsByAccountIdAndAccountHolderIdOrderByDateDesc(
+                            accountId,
+                            holderId,
+                            pageable);
+        }
+
         List<RecordView> recordViews = new ArrayList<>();
 
         for (Record r : records) {

@@ -55,6 +55,20 @@ public class RecordController {
         return ResponseEntity.ok(addRecord(wrapper, holderId));
     }
 
+    @GetMapping(path = "/expenses")
+    ResponseEntity getExpenses(@RequestAttribute int holderId) {
+        List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, holderId);
+        logger.debug("/expenses, holder: {}, status: {}", holderId, HttpStatus.OK);
+        return ResponseEntity.ok(records);
+    }
+
+    @GetMapping(path = "/incomes")
+    ResponseEntity getIncomes(@RequestAttribute int holderId) {
+        List<RecordView> records = getRecordService.getRecords(Type.INCOME, holderId);
+        logger.debug("/incomes, holder: {}, status: {}", holderId, HttpStatus.OK);
+        return ResponseEntity.ok(records);
+    }
+
     private RecordView addRecord(RecordWrapper wrapper, int holderId) {
         String logString = "/expenses, account: {}, amount: {}, date: {}, status: {}";
         try {
@@ -101,30 +115,21 @@ public class RecordController {
         }
     }
 
-    @GetMapping(path = "/expenses")
-    ResponseEntity getExpenses(@RequestAttribute int holderId) {
-        List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, holderId);
-        logger.debug("/expenses, holder: {}, status: {}", holderId, HttpStatus.OK);
-        return ResponseEntity.ok(records);
-    }
-
-    @GetMapping(path = "/incomes")
-    ResponseEntity getIncomes(@RequestAttribute int holderId) {
-        List<RecordView> records = getRecordService.getRecords(Type.INCOME, holderId);
-        logger.debug("/incomes, holder: {}, status: {}", holderId, HttpStatus.OK);
-        return ResponseEntity.ok(records);
-    }
-
     @GetMapping(path = "/all")
     ResponseEntity getAllRecords(@RequestParam(defaultValue = "20", required = false) int count,
                                  @RequestParam(defaultValue = "0", required = false) int page,
+                                 @RequestParam(defaultValue = "-1", required = false) int accountId,
                                  @RequestAttribute int holderId) {
-        logger.debug("/all, holder: {}, count: {}, page: {}, status: {}",
+        logger.debug("/all, holder: {}, account: {}, count: {}, page: {}, status: {}",
                 holderId,
+                accountId,
                 count,
                 page,
                 HttpStatus.OK);
-        return ResponseEntity.ok(getRecordService.getAllRecords(holderId, count, page));
+        if (accountId == -1)
+            return ResponseEntity.ok(getRecordService.getAllRecords(holderId, count, page));
+        else
+            return ResponseEntity.ok(getRecordService.getAllRecords(holderId, count, page, accountId));
     }
 
     @GetMapping(path = "/stat")
