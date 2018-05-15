@@ -14,16 +14,30 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Service for import and export internal states of the Calculators
+ */
 @Service
 public class StateManager implements StateService {
     private static Map<Class, JsonSerializable> subscribers = new HashMap<>();
     private static Logger logger = LoggerFactory.getLogger(StateManager.class);
 
+    /**
+     * Subscribe object to the export and import processes
+     *
+     * @param object to subscribe
+     */
     @Override
     public void subscribe(JsonSerializable object) {
         subscribers.put(object.getClass(), object);
     }
 
+    /**
+     * Export calculators' states to the file with certain path
+     * File will be created or overwritten
+     *
+     * @param path to destination of the exported file
+     */
     @Override
     public void exportState(String path) {
         Map<Class, String> objectMap = new HashMap<>();
@@ -41,6 +55,11 @@ public class StateManager implements StateService {
         }
     }
 
+    /**
+     * Import calculators' states from the file
+     *
+     * @param path to file for import
+     */
     @Override
     public void importState(String path) {
         File file = new File(path);

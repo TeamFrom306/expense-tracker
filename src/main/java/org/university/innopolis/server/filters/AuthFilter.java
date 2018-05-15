@@ -33,11 +33,26 @@ public class AuthFilter extends GenericFilterBean {
         this.authService = authService;
     }
 
+    /**
+     * Send 401 error as response
+     * @param response  for error sending
+     * @param message   detailed message for error
+     * @throws IOException  internal error from {@link HttpServletResponse#sendError(int, String)}
+     */
     private void sendError(HttpServletResponse response, String message) throws IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.sendError(401, message);
     }
 
+    /**
+     * Validate token by {@link TokenService}
+     * If token is invalid the message and error sends by this method
+     *
+     * @param response  for error sending
+     * @param token     for validation
+     * @return          True if valid, False otherwise
+     * @throws IOException  internal error from {@link HttpServletResponse#sendError(int, String)}
+     */
     private boolean isValid(HttpServletResponse response, String token) throws IOException {
         try {
             tokenService.validateToken(token);
@@ -53,6 +68,16 @@ public class AuthFilter extends GenericFilterBean {
         }
     }
 
+    /**
+     * Implements authentication and authorization
+     * Add {@code int holderId} parameter to {@link ServletRequest#getAttribute(String)}
+     *
+     * @param req   request to handle
+     * @param res   server's response to the request
+     * @param chain of the filters
+     * @throws ServletException necessary exception for {@code doFilter}
+     * @throws IOException      internal error from {@link #sendError(HttpServletResponse, String)}
+     */
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws
             ServletException,
