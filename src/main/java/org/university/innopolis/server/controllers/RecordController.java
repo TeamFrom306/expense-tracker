@@ -43,32 +43,39 @@ public class RecordController {
         this.avgRecordService = avgRecordService;
     }
 
+    /**
+     * Add expense record for {@code wrapper.accountId}
+     * @see #addRecord(RecordWrapper, int)
+     */
     @PostMapping(path = "/expenses")
     ResponseEntity addExpense(@Valid @RequestBody ExpenseWrapper wrapper,
                               @RequestAttribute int holderId) {
         return ResponseEntity.ok(addRecord(wrapper, holderId));
     }
 
+    /**
+     * Add income record for {@code wrapper.accountId}
+     * @see #addRecord(RecordWrapper, int)
+     */
     @PostMapping(path = "/incomes")
     ResponseEntity addIncome(@Valid @RequestBody IncomeWrapper wrapper,
                              @RequestAttribute int holderId) {
         return ResponseEntity.ok(addRecord(wrapper, holderId));
     }
 
-    @GetMapping(path = "/expenses")
-    ResponseEntity getExpenses(@RequestAttribute int holderId) {
-        List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, holderId);
-        logger.debug("/expenses, holder: {}, status: {}", holderId, HttpStatus.OK);
-        return ResponseEntity.ok(records);
-    }
-
-    @GetMapping(path = "/incomes")
-    ResponseEntity getIncomes(@RequestAttribute int holderId) {
-        List<RecordView> records = getRecordService.getRecords(Type.INCOME, holderId);
-        logger.debug("/incomes, holder: {}, status: {}", holderId, HttpStatus.OK);
-        return ResponseEntity.ok(records);
-    }
-
+    /**
+     * Common method to add records for {@code wrapper.accountId}
+     * {@code wrapper.accountId} should belong to the {@code holderId}
+     *
+     * @param wrapper   parameters of record
+     * @param holderId  added by AuthFilter
+     *                  This method requires authorization from
+     *                      {@link org.university.innopolis.server.filters.AuthFilter}
+     * @return  {@link HttpStatus#OK}
+     *          {@link HttpStatus#BAD_REQUEST} if date parameter is invalid
+     *          {@link HttpStatus#BAD_REQUEST} if value parameter is invalid
+     *          {@link HttpStatus#FORBIDDEN} if value parameter is invalid
+     */
     private RecordView addRecord(RecordWrapper wrapper, int holderId) {
         String logString = "/expenses, account: {}, amount: {}, date: {}, status: {}";
         try {
@@ -115,6 +122,48 @@ public class RecordController {
         }
     }
 
+    /**
+     * Get expenses for {@code holderId}
+     * @param holderId  added by AuthFilter
+     *                  This method requires authorization from
+     *                      {@link org.university.innopolis.server.filters.AuthFilter}
+     * @return  List of {@link RecordView} with type {@link Type#EXPENSE} as Json
+     */
+    @GetMapping(path = "/expenses")
+    ResponseEntity getExpenses(@RequestAttribute int holderId) {
+        List<RecordView> records = getRecordService.getRecords(Type.EXPENSE, holderId);
+        logger.debug("/expenses, holder: {}, status: {}", holderId, HttpStatus.OK);
+        return ResponseEntity.ok(records);
+    }
+
+    /**
+     * Get incomes for {@code holderId}
+     * @param holderId  added by AuthFilter
+     *                  This method requires authorization from
+     *                      {@link org.university.innopolis.server.filters.AuthFilter}
+     * @return  List of {@link RecordView} with type {@link Type#INCOME} as Json
+     */
+    @GetMapping(path = "/incomes")
+    ResponseEntity getIncomes(@RequestAttribute int holderId) {
+        List<RecordView> records = getRecordService.getRecords(Type.INCOME, holderId);
+        logger.debug("/incomes, holder: {}, status: {}", holderId, HttpStatus.OK);
+        return ResponseEntity.ok(records);
+    }
+
+    /**
+     * Get all records with pagination
+     * Records are ordered by date in descending
+     * @param count         (optional) amount of records in returned list
+     *                          by default value equals {@literal 20}
+     * @param page          (optional) number of page, counts from 0
+     *                          by default values equals {@literal 0}
+     * @param accountId     (optional) account to which records belong
+     *                          by default return records for all accounts
+     * @param holderId      added by AuthFilter
+     *                          This method requires authorization from
+     *                              {@link org.university.innopolis.server.filters.AuthFilter}
+     * @return  List of {@link RecordView} without certain type {@link Type} as Json
+     */
     @GetMapping(path = "/all")
     ResponseEntity getAllRecords(@RequestParam(defaultValue = "20", required = false) int count,
                                  @RequestParam(defaultValue = "0", required = false) int page,
@@ -132,6 +181,14 @@ public class RecordController {
             return ResponseEntity.ok(getRecordService.getAllRecords(holderId, count, page, accountId));
     }
 
+    /**
+     * Get statistics for records in last week/day/month etc.
+     *
+     * @param holderId  added by AuthFilter
+     *                      This method requires authorization from
+     *                          {@link org.university.innopolis.server.filters.AuthFilter}
+     * @return {@code Map<String, double>} where String is a name of statistics and double is a value
+     */
     @GetMapping(path = "/stat")
     ResponseEntity getStat(@RequestAttribute int holderId) {
         Map<String, Double> avgStat = avgRecordService.getAvgStat(holderId);

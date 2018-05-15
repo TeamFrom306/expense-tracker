@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PingController {
     private static Logger logger = LoggerFactory.getLogger(PingController.class);
 
+    /**
+     * Simple response test from the server
+     * @return {@link HttpStatus#OK}
+     */
     @GetMapping(path = "/ping")
     ResponseEntity<?> ping() {
         logger.debug("/ping, status: {}", HttpStatus.OK);

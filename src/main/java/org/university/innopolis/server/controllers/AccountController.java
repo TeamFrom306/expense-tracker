@@ -25,14 +25,33 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    /**
+     * Responsible for updating balance without transactions
+     * Account should belong to Holder
+     *
+     * @param wrapper   new balance from body of the request
+     * @param holderId  holder which added by AuthFilter
+     *                  This method will not work without authorization from AuthFilter
+     * @param accountId which balance will be changed
+     *
+     * @return AccountView as a Json
+     */
     @PostMapping(path = "/balance")
     ResponseEntity adjustBalance(@Valid @RequestBody BalanceWrapper wrapper,
                                  @RequestAttribute int holderId,
-                                 @RequestBody int accountId) {
+                                 @RequestParam int accountId) {
         logger.debug("/balance, holder: {}", holderId);
         return ResponseEntity.ok(accountService.adjustBalance(wrapper.getBalance(), holderId, accountId));
     }
 
+    /**
+     * Creating a new account. Account will be created with given name
+     * @param holderId          holder which added by AuthFilter
+     *                          This method will not work without authorization from AuthFilter
+     * @param accountWrapper    Account name in wrapper
+     *
+     * @return  AccountView as a Json
+     */
     @PostMapping(path = "/account")
     ResponseEntity createAccount(@RequestAttribute int holderId,
                                  @RequestBody AccountWrapper accountWrapper) {

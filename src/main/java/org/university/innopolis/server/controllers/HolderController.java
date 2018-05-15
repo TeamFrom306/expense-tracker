@@ -30,6 +30,15 @@ public class HolderController {
         this.authService = authService;
     }
 
+    /**
+     * Get most important data of Holder
+     * @param login     for which data will be shown
+     *                  User can view only itself data
+     * @param holderId  added by AuthFilter
+     *                  This method requires authorization from
+     *                      {@link org.university.innopolis.server.filters.AuthFilter}
+     * @return  {@link HolderView}
+     */
     @GetMapping(path = "/user")
     ResponseEntity getHolder(@RequestParam String login,
                              @RequestAttribute int holderId) {

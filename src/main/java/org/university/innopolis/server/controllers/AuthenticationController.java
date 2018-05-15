@@ -28,6 +28,13 @@ public class AuthenticationController {
         this.authService = authService;
     }
 
+    /**
+     * Authentication of users
+     *
+     * @param wrapper   credentials in form of login:password
+     * @return  a token newly generated or stored in database
+     *          {@link HttpStatus#UNAUTHORIZED}  if credentials are invalid
+     */
     @PostMapping(path = "/login")
     ResponseEntity login(@Valid @RequestBody CredentialsWrapper wrapper) {
         String logString = "/login, login: {}, password: {}, status: {}";
@@ -41,6 +48,14 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * Registration of users
+     *
+     * @param wrapper   credentials in form of login:password
+     * @return  {@link HolderView} as newly created account
+     *          {@link HttpStatus#BAD_REQUEST} if credentials are invalid or contains illegal symbols
+     *          {@link HttpStatus#CONFLICT} if login is already taken
+     */
     @PostMapping(path = "/register")
     ResponseEntity createHolder(@Valid @RequestBody CredentialsWrapper wrapper) {
         String logString = "/register, login: {}, password: {}, status: {}";
@@ -57,6 +72,11 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * Delete revoke token for holder
+     * @param holderId  for which token will be revoked
+     * @return  {@link HttpStatus#OK}
+     */
     @PostMapping(path = "/logout")
     ResponseEntity logout(@RequestAttribute int holderId) {
         String logString = "/logout, holder: {}, status: {}";
